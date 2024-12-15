@@ -1,12 +1,24 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
-    color: rgb(255, 255, 255);
-    background-color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+}
+
+.highlight{
+  color: red;
 }
 
 h1, p.red-text {
-    color: red;
+    color: rgb(255, 255, 255);
 }
 
 button {
@@ -21,7 +33,7 @@ button {
 input {
     font-family: Arial, Helvetica, sans-serif;
     color: black;
-    width: 500px;
+    width: 80vw;
     height: 70px;
     padding: 0px;
     margin: 8px 0;
@@ -33,7 +45,7 @@ input {
     font-size: 64px;
   }
 
-  input:focus {
+input:focus {
     border-color: #ff0000; /* Change border color */
     outline: none; /* Remove the default blue outline */
     box-shadow: 0 0 10px rgb(255, 0, 0); /* Add a subtle glow effect */
@@ -44,5 +56,11 @@ input[type="time"] {
     font-size: inherit;   /* Match the font size */
   }
 label.input-desc {
-    font-size: 64px;
+  text-align: center;
+  font-size: 56px;
+  color: red;
+}
+
+.opt-box {
+  margin-top: 64px;
 }

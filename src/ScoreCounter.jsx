@@ -38,6 +38,7 @@ function App() {
     setTotalPallets(Number(inputPallets)); // Set the initial number of pallets loaded
     setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
     setIsCounting(true); // Start counting
+    setInputPallets(''); // Clear the input field after submitting
   };
 
   // Function to add additional pallets
@@ -98,10 +99,16 @@ function App() {
   return (
     <div className="score-counter">
       <h1>Truck Loader Pallet Counter (WIP)</h1>
-
+      {/* Display the current status only if counting has started*/}
+      {isCounting && (<div>
+        <h2>Current Pallets Loaded: {totalPallets}</h2>
+        <h3>Pallets per Hour: {palletRate.toFixed(2)}</h3>
+        <p>Elapsed Time: {Math.floor(elapsedTime)} seconds</p>
+        </div>
+      )}
       {!isCounting && !paused? (
         // Input for the initial number of pallets and start time
-        <div>
+        <div className="opt-box">
           <label className="input-desc">
             Init-Pal&nbsp;
             <input
@@ -128,9 +135,9 @@ function App() {
         </div>
       ) : (
         // After starting, show the option to add additional pallets
-        <div>
+        <div className="opt-box">
           <label className='input-desc'>
-            Add-Pallets&nbsp;
+            Add-Pallets
             <input
               type="number"
               value={inputPallets}
@@ -139,33 +146,22 @@ function App() {
           </label>
           <br/>
           <button onClick={addPallets}>
-            Add Pallets
+            Update score
           </button>
           <button onClick={startOver}>
             Start Over
           </button>
+          {/* Show the Pause/Resume button only if counting has started */}
+          {isCounting && (
+            <button onClick={paused ? resumeCounting : pauseCounting}>
+              {paused ? "Resume" : "Pause"}
+            </button>
+          )}
         </div>
       )}
 
-      {/* Show the Pause/Resume button only if counting has started */}
-        {isCounting && (
-          <button onClick={paused ? resumeCounting : pauseCounting}>
-            {paused ? "Resume" : "Pause"}
-          </button>
-      )}
-      
-      {/* Display the current status */}
-      <div>
-        <h2>Current Pallets Loaded: {totalPallets}</h2>
-        <h3>Pallets per Hour: {palletRate.toFixed(2)}</h3>
-      </div>
 
-      {/* Display the elapsed time since the start */}
-      {
-        <div>
-          <p>Elapsed Time: {Math.floor(elapsedTime)} seconds</p>
-        </div>
-      }
+
     </div>
   );
 }
