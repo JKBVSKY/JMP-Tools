@@ -1,0 +1,48 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
+}
+
+h1, p.red-text {
+    color: red;
+}
+
+button {
+    height: 70px;
+    padding: 0px;
+    margin: 32px 32px;
+    font-size: 64px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+input {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    width: 500px;
+    height: 70px;
+    padding: 0px;
+    margin: 8px 0;
+    border: 0px solid;
+    border-radius: 0px;
+    box-sizing: border-box;
+    font-weight: 100;
+    line-height: 1;
+    font-size: 64px;
+  }
+
+  input:focus {
+    border-color: #ff0000; /* Change border color */
+    outline: none; /* Remove the default blue outline */
+    box-shadow: 0 0 10px rgb(255, 0, 0); /* Add a subtle glow effect */
+  }
+
+input[type="time"] {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: inherit;   /* Match the font size */
+  }
+label.input-desc {
+    font-size: 64px;
+}
