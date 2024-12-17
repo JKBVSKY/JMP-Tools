@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   const [startTimeInput, setStartTimeInput] = useState(''); // User input for start time (HH:MM format)
   const [paused, setPaused] = useState(false); // New state for pausing/resuming
   const [elapsedTimeWhenPaused, setElapsedTimeWhenPaused] = useState(0); // Time recorded at pause
-
+  const { t } = useTranslation();
 
   const startOver = () => {
     setInitialPallets(0);
@@ -51,17 +52,6 @@ function App() {
   };
 
   // Function to pause and resume the calculations
-  const togglePauseResume = () => {
-    setPaused(prevPaused => !prevPaused);
-    if (paused) {
-      // Resume counting (start interval again)
-      setIsCounting(true);
-    } else {
-      // Pause counting (clear interval)
-      setIsCounting(false);
-    }
-  };
-
   const pauseCounting = () => {
     setPaused(true); // Pause calculations
     setElapsedTimeWhenPaused(elapsedTime); // Save elapsed time at the pause moment
@@ -90,7 +80,6 @@ function App() {
         }
       }, 100); // Update every 100ms
   
-      console.log("Total Pallets:", totalPallets);
       // Cleanup interval when pausing or stopping
       return () => clearInterval(intervalId);
     }
@@ -98,24 +87,26 @@ function App() {
 
   return (
     <div className="score-counter">
-      <h1>Truck Loader Pallet Counter (WIP)</h1>
+      <h1 className="red-text">{t('ScoreCounter.title')}</h1>
       {/* Display the current status only if counting has started*/}
       {isCounting && (<div>
-        <h2>Current Pallets Loaded: {totalPallets}</h2>
-        <h3>Pallets per Hour: {palletRate.toFixed(2)}</h3>
-        <p>Elapsed Time: {Math.floor(elapsedTime)} seconds</p>
+        <h2>{t('ScoreCounter.palam')}{totalPallets}</h2>
+        <h3>{t('ScoreCounter.palperh')}{palletRate.toFixed(2)}</h3>
+        <p>{t('ScoreCounter.eltim')}{Math.floor(elapsedTime)} s</p>
         </div>
       )}
       {!isCounting && !paused? (
         // Input for the initial number of pallets and start time
         <div className="opt-box">
           <label className="input-desc">
-            Init-Pal&nbsp;
-            <input
+          Init-Pal&nbsp;
+          <input
+              className="custom-input"
               type="number"
               value={inputPallets}
               onChange={(e) => setInputPallets(e.target.value)}
               disabled={isCounting}
+              placeholder={t('ScoreCounter.addpal-pholder')}
             />
           </label>
           <br />
@@ -126,42 +117,57 @@ function App() {
               value={startTimeInput}
               onChange={(e) => setStartTimeInput(e.target.value)}
               disabled={isCounting}
+              lang="pl-PL"
+              placeholder="HH:MM"
             />
           </label>
           <br/>
           <button onClick={startCounting} disabled={inputPallets === '' || startTimeInput === ''}>
-            Start Counting
+            {t('ScoreCounter.buttons.startct')}
           </button>
         </div>
       ) : (
         // After starting, show the option to add additional pallets
         <div className="opt-box">
           <label className='input-desc'>
-            Add-Pallets
             <input
+              className="custom-input"
               type="number"
               value={inputPallets}
               onChange={(e) => setInputPallets(e.target.value)}
+              placeholder={t('ScoreCounter.addpal-pholder')}
             />
           </label>
           <br/>
           <button onClick={addPallets}>
-            Update score
+          {t('ScoreCounter.buttons.updtscr')}
           </button>
           <button onClick={startOver}>
-            Start Over
+          {t('ScoreCounter.buttons.startovr')}
           </button>
           {/* Show the Pause/Resume button only if counting has started */}
           {isCounting && (
             <button onClick={paused ? resumeCounting : pauseCounting}>
-              {paused ? "Resume" : "Pause"}
+              {paused ? t('ScoreCounter.buttons.resume') : t('ScoreCounter.buttons.pause')}
             </button>
           )}
         </div>
       )}
-
-
-
+        <div>
+          <h2>{t('ScoreCounter.howto')}</h2>
+            <p>
+              <br/>
+              <span className="highlight">Init-Pal: </span>{t('ScoreCounter.initpal-ht')}
+              <br/><br/>
+              <span className="highlight">Start-At: </span>{t('ScoreCounter.startat-ht')}
+              <br/><br/>
+              <span className="highlight">Add-Pallets: </span>{t('ScoreCounter.addpall-ht')}
+              <br/><br/>
+              <span className="highlight">Start over: </span>{t('ScoreCounter.startovr-ht')}
+              <br/><br/>
+              <span className="highlight">Pause/Resume: </span>{t('ScoreCounter.pauseresume-ht')}
+            </p>
+       </div>
     </div>
   );
 }

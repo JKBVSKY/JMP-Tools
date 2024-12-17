@@ -13,52 +13,87 @@ body {
   background-color: rgb(0, 0, 0);
 }
 
-.highlight{
+.highlight, h1.red-text{
   color: red;
 }
 
 h1, p.red-text {
-    color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 button {
-    height: 70px;
-    padding: 0px;
-    margin: 32px 32px;
-    font-size: 64px;
-    line-height: 1;
-    box-sizing: border-box;
+  height: 70px;
+  padding: 0px;
+  margin: 32px 32px;
+  cursor: pointer; /* Indicate it’s clickable */
+  border: none;
+  font-size: 64px;
+  line-height: 1;
+  box-sizing: border-box;
+  background-color: #9c9c9c;
+  transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+button:active {
+  background-color: #d0d0d0; /* Darker color when pressed */
+  transform: translateY(1px); /* Slight movement to enhance pressing effect */
+}
+
+button:hover {
+  background-color: #ebebeb; /* Slightly lighter color */
+}
+
+/* Disabled button styling */
+button:disabled {
+  cursor: not-allowed; /* Show a not-allowed cursor */
+  background-color: #666; /* Different background color */
+  color: #000000; /* Dimmed text color */
+  transform: none;
+}
+
+/* Prevent hover effects when the button is disabled */
+button:disabled:hover {
+  background-color: #666; /* Same as default disabled state */
 }
 
 input {
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
-    width: 80vw;
-    height: 70px;
-    padding: 0px;
-    margin: 8px 0;
-    border: 0px solid;
-    border-radius: 0px;
-    box-sizing: border-box;
-    font-weight: 100;
-    line-height: 1;
-    font-size: 64px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: black;
+  width: 50vw;
+  height: 70px;
+  padding: 0px 20px 0px 20px;
+  margin: 8px 0;
+  border: 0px solid;
+  border-radius: 0px;
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: 100;
+  line-height: 70px;
+  font-size: 64px;
   }
 
 input:focus {
-    border-color: #ff0000; /* Change border color */
-    outline: none; /* Remove the default blue outline */
-    box-shadow: 0 0 10px rgb(255, 0, 0); /* Add a subtle glow effect */
+  border-color: #ff0000; /* Change border color */
+  outline: none; /* Remove the default blue outline */
+  box-shadow: 0 0 10px rgb(255, 0, 0); /* Add a subtle glow effect */
   }
 
 input[type="time"] {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: inherit;   /* Match the font size */
+  width: 50vw;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 40px;   /* Match the font size */
   }
+
 label.input-desc {
   text-align: center;
   font-size: 56px;
   color: red;
+}
+
+.custom-input::placeholder {
+  text-align: center;
+  font-size: 20px;  /* Smaller placeholder font size */
+  line-height: 70px;
 }
 
 .opt-box {

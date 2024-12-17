@@ -1,0 +1,30 @@
+{
+    "LanguageSwitcher": {
+      "info": "Select your preferred language:"
+    },
+
+    "App":{
+      "welcome": "Welcome to my JMP-Tools app (WIP)"
+    },
+
+    "ScoreCounter": {
+      "title": "Score calculator for truck loaders",
+      "palam": "Current Pallets Loaded: ",
+      "palperh": "Pallets per Hour: ",
+      "eltim": "Elapsed Time: ",
+      "addpal-pholder": "Please add the amount of pallets...",
+      "buttons": {
+        "startct": "Begin calculations",
+        "updtscr": "Add pallets",
+        "startovr": "Finish calculations",
+        "pause": "Pause",
+        "resume": "Resume"
+      },
+      "howto": "How to use:",
+      "initpal-ht": "Sets the amount of pallets to start counting with.",
+      "startat-ht": "Sets the hour and minute at which your score began counting down.",
+      "addpall-ht": "Adds the next pallets You've loaded to update the score calculation.",
+      "startovr-ht": "Resets the calculation of Your score.",
+      "pauseresume-ht": "Pauses/Resumes the calculation of Your score (useful when You go on Your break)."
+    }
+}
