@@ -12,7 +12,9 @@ i18n
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
     backend: {
-      loadPath: 'public/locales/{{lng}}/translation.json', // Translation files location
+      loadPath: process.env.NODE_ENV === 'production'
+        ? '/JMP-Tools/public/locales/{{lng}}/translation.json' // For gh-pages
+        : 'public/locales/{{lng}}/translation.json', // For local development
     },
     detection: {
       order: ['path', 'cookie', 'localStorage', 'navigator'],
