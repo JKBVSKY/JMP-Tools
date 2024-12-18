@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;700&display=swap');
+
+
 html, body {
   height: 100%;
   margin: 0;
@@ -13,7 +16,7 @@ body {
   background-color: rgb(0, 0, 0);
 }
 
-.highlight, h1.red-text{
+.highlight, h1.red-text, label.input-desc{
   color: red;
 }
 
@@ -21,17 +24,32 @@ h1, p.red-text {
   color: rgb(255, 255, 255);
 }
 
+hr {
+  border: 0;
+  height: 2px;
+  background: linear-gradient(to right, black, #ff0000, #000000);
+  margin: 20px 20px;
+  position: relative;
+}
+
+hr.ct {
+  width: 50%;
+  margin: 0 auto;
+}
+
 button {
-  height: 70px;
-  padding: 0px;
+  height: 50px;
+  padding: 0px 10px;
   margin: 32px 32px;
   cursor: pointer; /* Indicate it’s clickable */
   border: none;
-  font-size: 64px;
+  font-size: 50px;
   line-height: 1;
   box-sizing: border-box;
   background-color: #9c9c9c;
-  transition: background-color 0.2s ease; /* Smooth hover effect */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect */
+  text-transform: uppercase;
+  font-family: 'Fira Sans', sans-serif;
 }
 
 button:active {
@@ -41,12 +59,18 @@ button:active {
 
 button:hover {
   background-color: #ebebeb; /* Slightly lighter color */
+  box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.6); /* Box shadow when hovered */
+}
+
+button:not(:hover) {
+  box-shadow: 0 0 0px rgba(255, 0, 0, 0); /* Reset shadow when not hovered */
 }
 
 /* Disabled button styling */
 button:disabled {
   cursor: not-allowed; /* Show a not-allowed cursor */
   background-color: #666; /* Different background color */
+  box-shadow: none;
   color: #000000; /* Dimmed text color */
   transform: none;
 }
@@ -87,7 +111,6 @@ input[type="time"] {
 label.input-desc {
   text-align: center;
   font-size: 56px;
-  color: red;
 }
 
 .custom-input::placeholder {
@@ -96,6 +119,20 @@ label.input-desc {
   line-height: 70px;
 }
 
-.opt-box {
+.opt-box, h1 {
   margin-top: 64px;
+}
+
+.language-switcher {
+  margin-top: 32px;
+}
+
+h1.calc-title {
+  font-size: 56px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 100;
+}
+
+.display {
+  margin-bottom: 52px;
 }

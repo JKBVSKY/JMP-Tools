@@ -10,23 +10,19 @@ import { useTranslation } from 'react-i18next';
 function App() {
     const { t } = useTranslation();
     return (
-        <>
-            <div className="main-container">
-                <div className="App">
-                    <header className="App-header">
-                        <h1>{t('App.welcome')}</h1><br/>
-                        <LanguageSwitcher/>
-                        <br/>
-                    </header>
-                </div>
-                <div className="display">
-                    <ScoreCounter/>
-                </div>
-
+        <div>
+            <div>
+                <header>
+                    <h1>{t('App.welcome')}</h1>
+                </header>
+                <LanguageSwitcher/>
             </div>
-            <br/>
+            <div className="display">
+                <ScoreCounter/>
+            </div>
+            <hr/>
             <Footer/>
-        </>
+        </div>
       );
     };
 

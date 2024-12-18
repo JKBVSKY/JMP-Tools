@@ -87,12 +87,14 @@ function App() {
 
   return (
     <div className="score-counter">
-      <h1 className="red-text">{t('ScoreCounter.title')}</h1>
+      <h1 className="calc-title">{t('ScoreCounter.title')}</h1>
       {/* Display the current status only if counting has started*/}
       {isCounting && (<div>
+        <hr className="ct"/>
         <h2>{t('ScoreCounter.palam')}{totalPallets}</h2>
         <h3>{t('ScoreCounter.palperh')}{palletRate.toFixed(2)}</h3>
         <p>{t('ScoreCounter.eltim')}{Math.floor(elapsedTime)} s</p>
+        <hr className="ct"/>
         </div>
       )}
       {!isCounting && !paused? (
@@ -153,21 +155,34 @@ function App() {
           )}
         </div>
       )}
-        <div>
-          <h2>{t('ScoreCounter.howto')}</h2>
+        {/*HOW-TO SECTION*/}
+        {!isCounting ? (
+          <div>
+            <hr/>
+            <h2>{t('ScoreCounter.howto')}</h2>
             <p>
               <br/>
               <span className="highlight">Init-Pal: </span>{t('ScoreCounter.initpal-ht')}
               <br/><br/>
               <span className="highlight">Start-At: </span>{t('ScoreCounter.startat-ht')}
               <br/><br/>
-              <span className="highlight">Add-Pallets: </span>{t('ScoreCounter.addpall-ht')}
-              <br/><br/>
-              <span className="highlight">Start over: </span>{t('ScoreCounter.startovr-ht')}
-              <br/><br/>
-              <span className="highlight">Pause/Resume: </span>{t('ScoreCounter.pauseresume-ht')}
             </p>
-       </div>
+          </div>
+        ) : (
+          // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
+          <div>
+              <hr/>
+              <h2>{t('ScoreCounter.howto')}</h2>
+              <p>
+              <br/>
+                <span className="highlight">{t('ScoreCounter.addpall-label')}</span>{t('ScoreCounter.addpall-dsc')}
+                <br/><br/>
+                <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
+                <br/><br/>
+                <span className="highlight">{t('ScoreCounter.pauseresume-label')}</span>{t('ScoreCounter.pauseresume-dsc')}
+            </p>
+          </div>
+        )}
     </div>
   );
 }
