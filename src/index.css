@@ -3,12 +3,15 @@
 
 html, body {
   height: 100%;
-  margin: 0;
+  margin: 0; /* Resets any unwanted browser margins */
+  padding: 0; /* Resets padding */
+  box-sizing: border-box; /* Ensures consistent sizing */
 }
 
 body {
   display: flex;
-  justify-content: center; /* Center horizontally */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: flex-start; /* Align content to the top */
   align-items: center;     /* Center vertically */
   font-family: 'Courier New', Courier, monospace;
   text-align: center;
