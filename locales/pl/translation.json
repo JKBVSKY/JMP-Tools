@@ -18,13 +18,16 @@
         "updtscr": "Dodaj ilość palet",
         "startovr": "Zakończ kalkulację",
         "pause": "Pauza",
-        "resume": "Kontynuuj"
+        "resume": "Wznów"
       },
       "howto": "Jak używać:",
       "initpal-ht": "Ustawia liczbę palet, od której rozpocznie się liczenie.",
       "startat-ht": "Ustawia godzinę i minutę, od której rozpocznie się odliczanie wyniku.",
+      "addpall-label": "Dodaj palety: ",
       "addpall-ht": "Dodaje następne załadowane palety w celu aktualizacji obliczeń wyniku.",
+      "finishcalc-label": "Zakończ kalkulację: ",
       "startovr-ht": "Resetuje obliczenia Twojego wyniku.",
+      "pauseresume-label": "Pauza/Wznów: ",
       "pauseresume-ht": "Wstrzymuje/wznawia obliczanie Twojego wyniku (przydatne, gdy robisz sobie przerwę)."
     }
 }

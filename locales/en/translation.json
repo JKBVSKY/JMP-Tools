@@ -23,8 +23,11 @@
       "howto": "How to use:",
       "initpal-ht": "Sets the amount of pallets to start counting with.",
       "startat-ht": "Sets the hour and minute at which your score began counting down.",
-      "addpall-ht": "Adds the next pallets You've loaded to update the score calculation.",
-      "startovr-ht": "Resets the calculation of Your score.",
-      "pauseresume-ht": "Pauses/Resumes the calculation of Your score (useful when You go on Your break)."
+      "addpall-label": "Add pallets: ",
+      "addpall-dsc": "Adds the next pallets You've loaded to update the score calculation.",
+      "finishcalc-label": "Finish calculations: ",
+      "finishcalc-dsc": "Resets the calculation of Your score.",
+      "pauseresume-label": "Pause/Resume: ",
+      "pauseresume-dsc": "Pauses/Resumes the calculation of Your score (useful when You go on Your break)."
     }
 }
