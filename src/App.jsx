@@ -20,7 +20,6 @@ function App() {
             <div className="display">
                 <ScoreCounter/>
             </div>
-            <hr/>
             <Footer/>
         </div>
       );

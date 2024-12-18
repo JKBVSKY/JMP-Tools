@@ -88,6 +88,7 @@ function App() {
   return (
     <div className="score-counter">
       <h1 className="calc-title">{t('ScoreCounter.title')}</h1>
+      <br/>
       {/* Display the current status only if counting has started*/}
       {isCounting && (<div>
         <hr className="ct"/>
@@ -158,7 +159,7 @@ function App() {
         {/*HOW-TO SECTION*/}
         {!isCounting ? (
           <div>
-            <hr/>
+            <hr/><br/>
             <h2>{t('ScoreCounter.howto')}</h2>
             <p>
               <br/>
@@ -167,20 +168,22 @@ function App() {
               <span className="highlight">Start-At: </span>{t('ScoreCounter.startat-ht')}
               <br/><br/>
             </p>
+            <br/><hr/>
           </div>
         ) : (
           // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
           <div>
-              <hr/>
-              <h2>{t('ScoreCounter.howto')}</h2>
-              <p>
-              <br/>
+            <hr/><br/>
+            <h2>{t('ScoreCounter.howto')}</h2>
+            <br/>
+            <p>
                 <span className="highlight">{t('ScoreCounter.addpall-label')}</span>{t('ScoreCounter.addpall-dsc')}
                 <br/><br/>
                 <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
                 <br/><br/>
                 <span className="highlight">{t('ScoreCounter.pauseresume-label')}</span>{t('ScoreCounter.pauseresume-dsc')}
             </p>
+            <br/><hr/>
           </div>
         )}
     </div>
