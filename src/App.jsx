@@ -1,4 +1,5 @@
 import { useState, } from 'react'
+import Navigation from './Navigation.jsx';
 import ScoreCounter from './ScoreCounter.jsx'
 import Footer from './Footer.jsx';
 import './index.css'
@@ -12,9 +13,7 @@ function App() {
     return (
         <div>
             <div>
-                <header>
-                    <h1>{t('App.welcome')}</h1>
-                </header>
+                <Navigation/>
                 <LanguageSwitcher/>
             </div>
             <div className="display">

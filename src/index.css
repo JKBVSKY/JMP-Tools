@@ -1,11 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;700&display=swap');
 
+/* * {
+  outline: 2px solid green;
+} */
 
 html, body {
-  height: 100%;
-  margin: 0; /* Resets any unwanted browser margins */
+  /* height: 100%;  not needed? */ 
+  max-width: 1000px;
+  margin: 0 auto; /* Resets any unwanted browser margins */
   padding: 0; /* Resets padding */
   box-sizing: border-box; /* Ensures consistent sizing */
+  background-color: rgb(0, 0, 0);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
@@ -17,10 +28,26 @@ body {
   text-align: center;
   color: rgb(255, 255, 255);
   background-color: rgb(0, 0, 0);
+  border: 10px outset #b3000080;
+}
+
+body::before {
+  content: ''; /* Create a pseudo-element to rotate background */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 114%;
+  height: 121%;
+  background-image: url('assets/biedronka_jmp.svg');
+  background-repeat: repeat;
+  background-size: 250px 250px; /* size of the image*/
+  transform:translate(-50%,-50%) rotate(-10deg); /* center the element then rotate */
+  z-index: -1; /* Ensure it stays behind the content */
+  opacity: 0.2;
 }
 
 .highlight, h1.red-text, label.input-desc{
-  color: red;
+  color: rgb(235, 0, 0);
 }
 
 h1, p.red-text {
@@ -30,7 +57,7 @@ h1, p.red-text {
 hr {
   border: 0;
   height: 2px;
-  background: linear-gradient(to right, black, #ff0000, #000000);
+  background: linear-gradient(to right, black, #b30000, #000000);
   margin: 20px 20px;
   position: relative;
 }
@@ -48,7 +75,6 @@ button {
   border: none;
   font-size: 50px;
   line-height: 1;
-  box-sizing: border-box;
   background-color: #9c9c9c;
   transition: background-color 0.2s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect */
   text-transform: uppercase;
@@ -62,7 +88,7 @@ button:active {
 
 button:hover {
   background-color: #ebebeb; /* Slightly lighter color */
-  box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.6); /* Box shadow when hovered */
+  box-shadow: 0 0 15px 5px #b30000; /* Box shadow when hovered */
 }
 
 button:not(:hover) {
@@ -103,9 +129,9 @@ input {
   }
 
 input:focus {
-  border-color: #ff0000; /* Change border color */
+  border-color: #b30000; /* Change border color */
   outline: none;
-  box-shadow: 0 0 10px rgb(255, 0, 0); /* Add a subtle glow effect */
+  box-shadow: 0 0 10px #b30000; /* Add a subtle glow effect */
   }
 
 input:focus::placeholder {
@@ -149,6 +175,51 @@ h1.calc-title {
 
 .display {
   margin-bottom: 52px;
+}
+
+.navbar {
+  display: block;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #000000;
+  padding: 10px 20px;
+}
+
+.navbar > a{
+  display: block;
+  padding: 40px;
+}
+
+.navbar .logo {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.navbar .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+.navbar .nav-links a:hover {
+  background-color: #b30000;
+}
+
+.navbar .menu-toggle {
+  display: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 /* Responsive styles for smaller screens */

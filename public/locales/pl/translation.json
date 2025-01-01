@@ -12,6 +12,7 @@
       "palam": "Aktualnie załadowano palet: ",
       "palperh": "Średnia: ",
       "eltim": "Czas ładowania: ",
+      "elptim": "Czas przerwy: ",
       "addpal-pholder": "Podaj ilość palet...",
       "buttons": {
         "startct": "Rozpocznij",
