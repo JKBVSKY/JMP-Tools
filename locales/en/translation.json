@@ -12,6 +12,7 @@
       "palam": "Current Pallets Loaded: ",
       "palperh": "Pallets per Hour: ",
       "eltim": "Elapsed Time: ",
+      "elptim": "Time on break: ",
       "addpal-pholder": "Please add the amount of pallets...",
       "buttons": {
         "startct": "Begin calculations",
