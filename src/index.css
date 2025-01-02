@@ -230,7 +230,7 @@ h1.calc-title {
   }
 
   h1.calc-title {
-    font-size: 32px;  /* Smaller title for mobile */
+    font-size: 2em;  /* Smaller title for mobile */
   }
 
   hr.ct {
@@ -269,5 +269,10 @@ h1.calc-title {
 
   .opt-box {
     margin-top: 40px;  /* Adjust spacing for mobile */
+  }
+
+  .navbar {
+    margin: 0 auto;
+    width: 90%;
   }
 }
