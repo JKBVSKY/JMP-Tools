@@ -1,38 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 
 function App() {
-  const [initialPallets, setInitialPallets] = useState(0); // Initial pallets loaded at the start
-  const [totalPallets, setTotalPallets] = useState(() => {
-    return Number(localStorage.getItem("totalPallets")) || 0;
-  }); // Total pallets loaded (initial + added)
-  const [startTime, setStartTime] = useState(() => {
-    return Number(localStorage.getItem("startTime")) || null;
-  }); // Start time of the truck loader's work (from user input)
-  const [elapsedTime, setElapsedTime] = useState(() => {
-    return Number(localStorage.getItem("elapsedTime")) || 0;
-  }); // Elapsed time since start (in seconds)
-  const [palletRate, setPalletRate] = useState(() => {
-    return Number(localStorage.getItem("palletRate")) || 0;
-  }); // Pallets loaded per hour (calculated)
-  const [inputPallets, setInputPallets] = useState(''); // Input value for new pallets to add
+  // const [initialPallets, setInitialPallets] = useState(0); // REMOVE?
+  const [inputPallets, setInputPallets] = useState('');
+  const [startTimeInput, setStartTimeInput] = useState('');
   const [isCounting, setIsCounting] = useState(() => {
     return localStorage.getItem("isCounting") === "true";
-  }); // Whether the truck loader has started working
-  const [startTimeInput, setStartTimeInput] = useState(''); // User input for start time (HH:MM format)
+  });
   const [paused, setPaused] = useState(() => {
     return localStorage.getItem("paused") === "true";
-  }); // New state for pausing/resuming
+  });
+  const [totalPallets, setTotalPallets] = useState(() => {
+    return Number(localStorage.getItem("totalPallets")) || 0;
+  });
+  const [startTime, setStartTime] = useState(() => {
+    return Number(localStorage.getItem("startTime")) || null;
+  });
+  const [elapsedTime, setElapsedTime] = useState(() => {
+    return Number(localStorage.getItem("elapsedTime")) || 0;
+  });
+  const [palletRate, setPalletRate] = useState(() => {
+    return Number(localStorage.getItem("palletRate")) || 0;
+  });
   const [elapsedTimeWhenPaused, setElapsedTimeWhenPaused] = useState(() => {
     return Number(localStorage.getItem("elapsedTimeWhenPaused")) || 0;
-  }); // Time recorded at pause
+  });
   const [pauseTimer, setPauseTimer] = useState(() => {
     return Number(localStorage.getItem("pauseTimer")) ||0;
-  }); // Tracks the paused duration in seconds
+  });
   const [pauseInterval, setPauseInterval] = useState(() => {
     return Number(localStorage.getItem("pauseInterval")) || null;
-  }); // Stores the timeout for auto-resume
+  });
+  const [frozenRate, setFrozenRate] = useState(() => {
+    return Number(localStorage.getItem('frozenRate')) || null;
+  });
+  
+  const pauseTimerRef = useRef(pauseTimer);
+  const [TimeoutStartTime, setTimeoutStartTime] = useState(0);
+  let pauseTimeoutId;
   const { t } = useTranslation();
 
   const startOver = () => {
@@ -41,7 +48,7 @@ function App() {
     clearInterval(pauseInterval); // Stop the interval
     setPauseInterval(null); // Clear interval reference
   }
-    setInitialPallets(0);
+    // setInitialPallets(0); // REMOVE?
     setTotalPallets(0);
     setStartTime(null);
     setElapsedTime(0);
@@ -53,6 +60,7 @@ function App() {
     setElapsedTimeWhenPaused(0);
     setPauseTimer(0);
     setPauseInterval(null);
+    setFrozenRate(0);
 
     // Clear localStorage
     localStorage.removeItem('totalPallets');
@@ -64,6 +72,7 @@ function App() {
     localStorage.removeItem('elapsedTimeWhenPaused');
     localStorage.removeItem('pauseTimer');
     localStorage.removeItem('pauseInterval');
+    localStorage.removeItem('frozenRate');
   };
 
     // Persist states in localStorage
@@ -105,10 +114,14 @@ function App() {
       localStorage.setItem("pauseInterval", pauseInterval);
     }, [pauseInterval]);
 
+    useEffect(() => {
+      localStorage.setItem("frozenRate", frozenRate);
+    }, [frozenRate]);
+
   // Start counting function (sets the start time and initializes the pallets)
   const startCounting = () => {
 
-    if (!startTime) { // Allow setting `startTime` only once
+  if (!startTime) { // Allow setting `startTime` only once
       const [hours, minutes] = startTimeInput.split(":").map((num) => parseInt(num, 10));
       const startDate = new Date();
       startDate.setHours(hours, minutes, 0, 0); // Set to the user-provided time
@@ -116,15 +129,16 @@ function App() {
       const timestamp = startDate.getTime();
       setStartTime(timestamp); // Save the timestamp
       setTotalPallets(Number(inputPallets)); // Set the initial number of pallets loaded
-      setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
+      // setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
       setIsCounting(true); // Start counting
       setInputPallets(""); // Clear the input field after submitting
     }
   };
 
-  const formattedStartTime = startTime
-    ? new Date(startTime).toLocaleString()
-    : "Not set";
+  // Observe if this code is really needed 
+  // const formattedStartTime = startTime
+  //   ? new Date(startTime).toLocaleString()
+  //   : "Not set";
 
   // Function to add additional pallets
   const addPallets = () => {
@@ -135,99 +149,68 @@ function App() {
     }
   };
 
-  // Function to pause and resume the calculations
-  const pauseCounting = () => {
-    setPaused(true); // Pause calculations
-    setElapsedTimeWhenPaused(elapsedTime); // Save elapsed time at the pause moment
-  
-      // Clear any previous interval before starting a new one
-  if (pauseInterval) {
-    clearInterval(pauseInterval);
-    setPauseInterval(null);
-  }
-  
-    // Start the paused timer
-    setPauseTimer(0); // Reset pause timer
-    const interval = setInterval(() => {
-      setPauseTimer((prev) => prev + 1);
-    }, 1000);
-    setPauseInterval(interval);
-
-    setTimeout(() => {
-      resumeCounting(); // Auto-resume after 10 seconds
-      clearInterval(interval); // Stop the pause timer after resuming
-      setPauseInterval(null); // Clear interval reference
-    }, 900000);
-  };
-  
-  const resumeCounting = () => {
-    setPaused(false); // Resume calculations
-    const adjustedStartTime = new Date(Date.now() - elapsedTimeWhenPaused * 1000); // Adjust for paused duration
-    setStartTime(Date.now()); // Reset start time to now for resuming
-  
-    // Clear the paused timer
-    if (pauseInterval) {
-      clearInterval(pauseInterval); // Stop the interval
-      setPauseInterval(null);
-    }
-  };
-
-  // console.log (totalPallets + ' totalPallets');
-  // console.log (elapsedTime + ' elapsedTime');
-  // console.log (palletRate + ' palletRate');
-  // console.log (isCounting + ' isCounting');
-  // console.log (paused + ' paused');
-  // console.log (elapsedTimeWhenPaused + ' elapsedTimeWhenPaused');
-  // console.log (startTime + ' startTime');
-  console.log("Pause timer:", pauseTimer);
-  console.log("Pause interval:", pauseInterval);
-
-
+  // Reference to pauseTimer, so it can be accessed from another functions
   useEffect(() => {
-    // Retrieve values from localStorage on component mount
-    const savedTotalPallets = localStorage.getItem("totalPallets");
-    const savedElapsedTime = localStorage.getItem("elapsedTime");
-    const savedPalletRate = localStorage.getItem("palletRate");
+    pauseTimerRef.current = pauseTimer;
+  }, [pauseTimer]);
 
-    if (savedTotalPallets) setTotalPallets(Number(savedTotalPallets));
-    if (savedElapsedTime) setElapsedTime(Number(savedElapsedTime));
-    if (savedPalletRate) setPalletRate(Number(savedPalletRate));
+  // [NEW useEffect] Function to pause and resume the calculations
+  useEffect(() => {
+    if (paused) {
+      setFrozenRate(palletRate); // Freeze the current rate
+      setPalletRate(palletRate); // Immediately set palletRate to the frozen
 
-  }, []);
+      // Start interval to increment pauseTimer
+      const interval = setInterval(() => {
+        setPauseTimer((prev) => prev + 1);
+      }, 1000);
+  
+      // Cleanup interval when paused becomes false
+      return () => clearInterval(interval);
+    }
+  }, [paused]);
 
-  
-  // useEffect(() => {
-  //   if (isCounting && !paused && startTime !== null) {
-  //     const intervalId = setInterval(() => {
-  //       const currentElapsedTime = (Date.now() - startTime) / 1000; // Time since last start
-  //       const totalElapsedTime = elapsedTimeWhenPaused + currentElapsedTime; // Add paused time
-  
-  //       // Update elapsed time
-  //       setElapsedTime(totalElapsedTime);
-  
-  //       // Update pallet rate
-  //       const rate = (totalPallets / totalElapsedTime) * 3600; // Total pallets per hour
-  //       setPalletRate(rate);
-  //     }, 100); // Update every 100ms
-  
-  //     // Cleanup interval on unmount
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, [isCounting, paused, startTime, elapsedTimeWhenPaused, totalPallets]);
+  //     //WORK ON THIS, LAST THING TO FIX
+  //     // Start the timeout with conditional delay based on elapsed time
+  //     // const remainingTime = 10000 - elapsedTime; // Calculate remaining time to wait for resumption
+  //     // console.log (remainingTime);
+  //     // pauseTimeoutId = setTimeout(() => {
+  //     //   resumeCounting(); // Auto-resume after the remaining time
+  //     //   clearInterval(interval); // Stop the pause timer after resuming
+  //     //   setPauseInterval(null); // Clear interval reference
+  //     // }, remainingTime); // Start timeout with the remaining time delay
+  //     // setTimeoutStartTime(Date.now()); // Store the time when timeout was started
+  // };
+
+  // Button for debugging purposes
+  const handleDebugClick = () => {
+    console.clear();
+    console.log ('============================');
+    // console.log (initialPallets + ' initialPallets'); // REMOVE?
+    console.log (totalPallets + ' totalPallets');
+    console.log (elapsedTime + ' elapsedTime');
+    console.log (palletRate + ' palletRate');
+    console.log (isCounting + ' isCounting');
+    console.log (paused + ' paused');
+    console.log (startTime + ' startTime');
+    console.log ("Pause timer:", pauseTimer);
+    console.log ("Pause timer ref:", pauseTimerRef);
+    console.log ("Pause interval:", pauseInterval);
+    console.log (Date.now() / 1000);
+    console.log ("FrozenRate: " + frozenRate);
+    console.log ('============================');
+  }
 
   // Update elapsed time and pallet rate every second
   useEffect(() => {
-    if (isCounting && !paused && startTime !== null) {
+    if (isCounting && startTime !== null) {
       const intervalId = setInterval(() => {
         const currentElapsedTime = (Date.now() - startTime) / 1000; // Total time since start
-        setElapsedTime(elapsedTimeWhenPaused + currentElapsedTime); // Add paused time
-      
-      // Calculate pallets per hour
-        if (elapsedTimeWhenPaused > 0){
-          const rate = (totalPallets / (elapsedTimeWhenPaused + currentElapsedTime)) * 3600; // Total pallets per hour
-          setPalletRate(rate); // Update the rate of pallets per hour
-        }else{
-          const rate = (totalPallets / currentElapsedTime) * 3600; // Total pallets per hour
+        setElapsedTime(currentElapsedTime); // Set elapsed time
+
+        // Calculate pallets per hour
+        if (!paused) {
+          const rate = (totalPallets / (currentElapsedTime - pauseTimerRef.current)) * 3600;
           setPalletRate(rate); // Update the rate of pallets per hour
         }
       }, 100); // Update every 100ms
@@ -240,17 +223,16 @@ function App() {
   return (
     <div className="score-counter">
       <h1 className="calc-title">{t('ScoreCounter.title')}</h1>
-      <br/>
       
       {/* Display the current status only if counting has started*/}
-      <div>
+      <div className="score-display">
         <hr className="ct"/>
         <h2>{t('ScoreCounter.palam')}{totalPallets}</h2>
-        <h3>{t('ScoreCounter.palperh')}{palletRate.toFixed(2)}</h3>
+        <h3>{t('ScoreCounter.palperh')}{paused ? (frozenRate !== null ? frozenRate.toFixed(2) : '--') : palletRate.toFixed(2)}</h3>
         <p>
           {t('ScoreCounter.eltim')} {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
         </p>
-        {paused && pauseTimer > 0 && <p>{t('ScoreCounter.elptim')}{Math.floor(pauseTimer / 60)}m {pauseTimer % 60}s</p>}
+        {(paused || pauseTimer > 0) && <p>{t('ScoreCounter.elptim')}{Math.floor(pauseTimer / 60)}m {pauseTimer % 60}s</p>}
         <hr className="ct"/>
         </div>
       
@@ -259,38 +241,33 @@ function App() {
         // Input for the initial number of pallets and start time
         <div className="opt-box">
           <label className="input-desc">
-          Init-Pal&nbsp;
-          <input
-              className="custom-input"
-              type="number"
-              value={inputPallets}
-              onChange={(e) => setInputPallets(e.target.value)}
-              disabled={isCounting}
-              placeholder={t('ScoreCounter.addpal-pholder')}
-            />
+            {t('ScoreCounter.inittime')}
+              <input
+                className="custom-input"
+                type="time"
+                value={startTimeInput}
+                onChange={(e) => setStartTimeInput(e.target.value)}
+                disabled={isCounting}
+                lang="pl-PL"
+                placeholder="HH:MM"
+              />
           </label>
-          <br />
-          <label className="input-desc">
-            Start-At&nbsp;
-            <input
-              type="time"
-              value={startTimeInput}
-              onChange={(e) => setStartTimeInput(e.target.value)}
-              disabled={isCounting}
-              lang="pl-PL"
-              placeholder="HH:MM"
-            />
-          </label>
-          <br/>
-          <button onClick={startCounting} disabled={inputPallets === '' || startTimeInput === ''}>
+          <br/><br/>
+          <button onClick={startCounting} disabled={startTimeInput === ''}>
             {t('ScoreCounter.buttons.startct')}
           </button>
           <button onClick={startOver}>DEBUG-RESET</button>
+          {/* DEBUG BUTTON */}
+            <button onClick={handleDebugClick}>
+              Console.log DEBUG
+            </button>
         </div>
       ) : (
         // After starting, show the option to add additional pallets
         <div className="opt-box">
           <label className='input-desc'>
+            {t('ScoreCounter.addpal')}
+            <br/>
             <input
               className="custom-input"
               type="number"
@@ -309,10 +286,16 @@ function App() {
           {/* Show the Pause/Resume button only if counting has started */}
           {isCounting && (
             <button 
-              onClick={paused ? resumeCounting : pauseCounting} 
-              disabled={pauseTimer >= 899}
+              onClick={() => setPaused((prev) => !prev)} // Toggle paused state
+              // disabled={pauseTimer >= 150} // UNCOMMENT WHEN setTimeout is fixed
             >
               {paused ? t('ScoreCounter.buttons.resume') : t('ScoreCounter.buttons.pause')}
+            </button>
+          )}
+          {/* DEBUG BUTTON */}
+          {isCounting && (
+            <button onClick={handleDebugClick}>
+              Console.log DEBUG
             </button>
           )}
         </div>
@@ -323,10 +306,8 @@ function App() {
             <hr/><br/>
             <h2>{t('ScoreCounter.howto')}</h2>
             <p>
-              <br/>
-              <span className="highlight">Init-Pal: </span>{t('ScoreCounter.initpal-ht')}
               <br/><br/>
-              <span className="highlight">Start-At: </span>{t('ScoreCounter.startat-ht')}
+              <span className="highlight">{t('ScoreCounter.startat-label')} </span>{t('ScoreCounter.startat-dsc')}
               <br/><br/>
             </p>
             <br/><hr/>

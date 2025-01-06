@@ -1,4 +1,7 @@
 # JMP-Tools
+
+## Version 0.1.0 STABLE is up!
+
 A tool designed to allow having better control of the workers' score during their day at the work. For JMP warehouse workers.
 
 The app is mainly going to be focused at the truck loaders section, but it also might be embracing the packaging section in the future.

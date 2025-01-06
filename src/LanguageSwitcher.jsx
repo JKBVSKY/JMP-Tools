@@ -10,8 +10,7 @@ const LanguageSwitcher = () => {
   
   return (
     <div className="language-switcher gradient-bg">
-        <hr/><br/>
-        <p>{t('LanguageSwitcher.info', 'Default text')}</p>
+        <h1>{t('LanguageSwitcher.info', 'Default text')}</h1>
         <button onClick={() => changeLanguage('en')}>English</button>
         <button onClick={() => changeLanguage('pl')}>Polski</button>
         <hr/>

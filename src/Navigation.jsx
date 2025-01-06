@@ -1,29 +1,33 @@
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navigation = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
+  const [isMenuVisible, setIsMenuVisible] = useState(false); // State to manage menu visibility
   const { t } = useTranslation();
+
+  const handleLanguageButton = () => {
+    setIsMenuVisible(prevState => !prevState); // Toggle the visibility of the language menu
+  };
 
   return (
     <nav className="navbar">
             <a href="#" className="logo">
             {t('App.welcome')}
             </a>
-      <div className={`nav-links ${isMenuOpen ? "show" : ""}`}>
-        <a href="#home">Home</a>
+      <hr/>
+      <div className={"nav-links"}>
+        {/* <a href="#home">Home</a>
         <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#language">Language</a>
+        <a href="#services">Services</a> */}
+        <a href="#language" onClick={handleLanguageButton}>Language</a>
       </div>
-      <span className="menu-toggle" onClick={toggleMenu}>
-        ☰
-      </span>
+      <hr/>
+
+      {/* Conditionally render the language menu */}
+      {isMenuVisible && (
+        <LanguageSwitcher/>
+      )}
     </nav>
   );
 };

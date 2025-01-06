@@ -14,7 +14,6 @@ function App() {
         <div>
             <div>
                 <Navigation/>
-                <LanguageSwitcher/>
             </div>
             <div className="display">
                 <ScoreCounter/>

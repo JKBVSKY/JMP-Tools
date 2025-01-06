@@ -13,7 +13,9 @@
       "palperh": "Pallets per Hour: ",
       "eltim": "Elapsed Time: ",
       "elptim": "Time on break: ",
-      "addpal-pholder": "Please add the amount of pallets...",
+      "inittime": "Start time",
+      "addpal": "Add pallets",
+      "addpal-pholder": "Type the amount of pallets...",
       "buttons": {
         "startct": "Begin calculations",
         "updtscr": "Add pallets",
@@ -22,8 +24,8 @@
         "resume": "Resume"
       },
       "howto": "How to use:",
-      "initpal-ht": "Sets the amount of pallets to start counting with.",
-      "startat-ht": "Sets the hour and minute at which your score began counting down.",
+      "startat-label": "Start time: ",
+      "startat-dsc": "Sets the hour and minute at which your score began counting down.",
       "addpall-label": "Add pallets: ",
       "addpall-dsc": "Adds the next pallets You've loaded to update the score calculation.",
       "finishcalc-label": "Finish calculations: ",
