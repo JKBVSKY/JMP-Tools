@@ -6,11 +6,10 @@ function App() {
   // const [initialPallets, setInitialPallets] = useState(0); // REMOVE?
   const [inputPallets, setInputPallets] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [message, setMessage] = useState("");
   const [isCounting, setIsCounting] = useState(() => {
     return localStorage.getItem("isCounting") === "true";
-  });
-  const [paused, setPaused] = useState(() => {
-    return localStorage.getItem("paused") === "true";
   });
   const [totalPallets, setTotalPallets] = useState(() => {
     return Number(localStorage.getItem("totalPallets")) || 0;
@@ -24,30 +23,22 @@ function App() {
   const [palletRate, setPalletRate] = useState(() => {
     return Number(localStorage.getItem("palletRate")) || 0;
   });
-  const [elapsedTimeWhenPaused, setElapsedTimeWhenPaused] = useState(() => {
-    return Number(localStorage.getItem("elapsedTimeWhenPaused")) || 0;
+  const [isAddingPause, setIsAddingPause] = useState(() => {
+    return (localStorage.getItem("isAddingPause")) === "true";
   });
-  const [pauseTimer, setPauseTimer] = useState(() => {
-    return Number(localStorage.getItem("pauseTimer")) ||0;
+  const [pausedFor, setPausedFor] = useState(() => {
+    return Number(localStorage.getItem("pausedFor")) ||0;
   });
-  const [pauseInterval, setPauseInterval] = useState(() => {
-    return Number(localStorage.getItem("pauseInterval")) || null;
+  const [remaining, setRemaining] = useState(() => {
+    return Number(localStorage.getItem('remaining')) || 15;
   });
-  const [frozenRate, setFrozenRate] = useState(() => {
-    return Number(localStorage.getItem('frozenRate')) || null;
-  });
-  
-  const pauseTimerRef = useRef(pauseTimer);
-  const [TimeoutStartTime, setTimeoutStartTime] = useState(0);
-  let pauseTimeoutId;
+
+
+
   const { t } = useTranslation();
 
   const startOver = () => {
-      // Clear the interval if it exists
-  if (pauseInterval) {
-    clearInterval(pauseInterval); // Stop the interval
-    setPauseInterval(null); // Clear interval reference
-  }
+
     // setInitialPallets(0); // REMOVE?
     setTotalPallets(0);
     setStartTime(null);
@@ -56,11 +47,10 @@ function App() {
     setInputPallets('');
     setIsCounting(false);
     setStartTimeInput('');
-    setPaused(false); // Ensure paused state is reset
-    setElapsedTimeWhenPaused(0);
-    setPauseTimer(0);
-    setPauseInterval(null);
-    setFrozenRate(0);
+    setIsAddingPause(false);
+    setPausedFor(0);
+    setRemaining(15);
+    setMessage("");
 
     // Clear localStorage
     localStorage.removeItem('totalPallets');
@@ -68,11 +58,9 @@ function App() {
     localStorage.removeItem('palletRate');
     localStorage.removeItem('startTime');
     localStorage.removeItem('isCounting');
-    localStorage.removeItem('paused');
-    localStorage.removeItem('elapsedTimeWhenPaused');
-    localStorage.removeItem('pauseTimer');
-    localStorage.removeItem('pauseInterval');
-    localStorage.removeItem('frozenRate');
+    localStorage.removeItem('isAddingPause');
+    localStorage.removeItem('remaining')
+    localStorage.removeItem('pausedFor')
   };
 
     // Persist states in localStorage
@@ -91,33 +79,24 @@ function App() {
     useEffect(() => {
       localStorage.setItem("isCounting", isCounting);
     }, [isCounting]);
-  
+
     useEffect(() => {
-      localStorage.setItem("paused", paused);
-    }, [paused]);
-  
-    useEffect(() => {
-      localStorage.setItem("elapsedTimeWhenPaused", elapsedTimeWhenPaused);
-    }, [elapsedTimeWhenPaused]);
+      localStorage.setItem("isAddingPause", isAddingPause);
+    }, [isAddingPause]);
   
     useEffect(() => {
       if (startTime !== null) {
         localStorage.setItem("startTime", startTime);
       }
     }, [startTime]);
-    
-    useEffect(() => {
-      localStorage.setItem("pauseTimer", pauseTimer);
-    }, [pauseTimer]);
-  
-    useEffect(() => {
-      localStorage.setItem("pauseInterval", pauseInterval);
-    }, [pauseInterval]);
 
     useEffect(() => {
-      localStorage.setItem("frozenRate", frozenRate);
-    }, [frozenRate]);
+      localStorage.setItem("pausedFor", pausedFor);
+    }, [pausedFor]);
 
+    useEffect(() => {
+      localStorage.setItem("remaining", remaining);
+    }, [remaining]);
   // Start counting function (sets the start time and initializes the pallets)
   const startCounting = () => {
 
@@ -135,11 +114,6 @@ function App() {
     }
   };
 
-  // Observe if this code is really needed 
-  // const formattedStartTime = startTime
-  //   ? new Date(startTime).toLocaleString()
-  //   : "Not set";
-
   // Function to add additional pallets
   const addPallets = () => {
     const newPallets = Number(inputPallets);
@@ -149,38 +123,35 @@ function App() {
     }
   };
 
-  // Reference to pauseTimer, so it can be accessed from another functions
-  useEffect(() => {
-    pauseTimerRef.current = pauseTimer;
-  }, [pauseTimer]);
+  // HERE SUBSTITUTE THIS FOR NEW PAUSE FUNCTION
+  // useEffect(() => {
 
-  // [NEW useEffect] Function to pause and resume the calculations
-  useEffect(() => {
-    if (paused) {
-      setFrozenRate(palletRate); // Freeze the current rate
-      setPalletRate(palletRate); // Immediately set palletRate to the frozen
+  //   if (paused) {
+  //     // Save the time when the pause starts
+  //     if (!pauseStartRef.current) {
+  //       pauseStartRef.current = Date.now();
+  //     }
 
-      // Start interval to increment pauseTimer
-      const interval = setInterval(() => {
-        setPauseTimer((prev) => prev + 1);
-      }, 1000);
-  
-      // Cleanup interval when paused becomes false
-      return () => clearInterval(interval);
-    }
-  }, [paused]);
+  //     // Start the interval to update pauseTimer every second
+  //     interval = setInterval(() => {
+  //       const elapsed = Math.floor((Date.now() - pauseStartRef.current) / 1000); // Elapsed time in seconds
+  //       setPauseTimer((prevTimer) => prevTimer + 1); // Increment by 1 each second
+  //       pauseStartRef.current += 1000; // Update pauseStartRef to avoid cumulative additions
+  //     }, 1000);
+  //   } else {
+  //     // Add the final elapsed time when unpausing
+  //     if (pauseStartRef.current) {
+  //       const elapsed = Math.floor((Date.now() - pauseStartRef.current) / 1000); // Total elapsed time
+  //       setPauseTimer((prevTimer) => prevTimer + elapsed); // Add elapsed time once
+  //       pauseStartRef.current = null; // Reset pauseStartRef
+  //     }
 
-  //     //WORK ON THIS, LAST THING TO FIX
-  //     // Start the timeout with conditional delay based on elapsed time
-  //     // const remainingTime = 10000 - elapsedTime; // Calculate remaining time to wait for resumption
-  //     // console.log (remainingTime);
-  //     // pauseTimeoutId = setTimeout(() => {
-  //     //   resumeCounting(); // Auto-resume after the remaining time
-  //     //   clearInterval(interval); // Stop the pause timer after resuming
-  //     //   setPauseInterval(null); // Clear interval reference
-  //     // }, remainingTime); // Start timeout with the remaining time delay
-  //     // setTimeoutStartTime(Date.now()); // Store the time when timeout was started
-  // };
+  //     // Clear the interval
+  //     clearInterval(interval);
+  //   }
+
+  // }, [paused]);
+
 
   // Button for debugging purposes
   const handleDebugClick = () => {
@@ -191,16 +162,44 @@ function App() {
     console.log (elapsedTime + ' elapsedTime');
     console.log (palletRate + ' palletRate');
     console.log (isCounting + ' isCounting');
-    console.log (paused + ' paused');
+    console.log (isAddingPause + ' isAddingPause');
     console.log (startTime + ' startTime');
-    console.log ("Pause timer:", pauseTimer);
-    console.log ("Pause timer ref:", pauseTimerRef);
-    console.log ("Pause interval:", pauseInterval);
+    console.log ("Paused for:", pausedFor);
     console.log (Date.now() / 1000);
-    console.log ("FrozenRate: " + frozenRate);
+    console.log ("Remaining: ", remaining);
     console.log ('============================');
   }
 
+  // START OF PAUSE FUNCTIONS
+  const handleInputChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (value >= 1 && value <= remaining) {
+      setInputValue(value);
+    } else {
+      setInputValue(""); // Reset if out of range
+    }
+  };
+
+  const handlePauseClick = () => {
+    setIsAddingPause(true); // Show the form
+  }
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue !== "" && inputValue <= remaining) {
+      const chosenNumber = parseInt(inputValue, 10);
+      setPausedFor((prev) => prev + chosenNumber);
+      setRemaining((prev) => prev - chosenNumber);
+      setInputValue(""); // Reset input
+      setIsAddingPause(false); // Hide the form
+      if (pausedFor + chosenNumber === 15) {
+        setMessage("You've used 15 minutes of Your break already.");
+      }
+    }
+  };
+  //END OF PAUSE FUNCTIONS
+  
   // Update elapsed time and pallet rate every second
   useEffect(() => {
     if (isCounting && startTime !== null) {
@@ -209,16 +208,14 @@ function App() {
         setElapsedTime(currentElapsedTime); // Set elapsed time
 
         // Calculate pallets per hour
-        if (!paused) {
-          const rate = (totalPallets / (currentElapsedTime - pauseTimerRef.current)) * 3600;
-          setPalletRate(rate); // Update the rate of pallets per hour
-        }
+        const rate = (totalPallets / (currentElapsedTime - (pausedFor * 60))) * 3600;
+        setPalletRate(rate); // Update the rate of pallets per hour
       }, 100); // Update every 100ms
   
       // Cleanup interval when pausing or stopping
       return () => clearInterval(intervalId);
     }
-  }, [isCounting, paused, startTime, elapsedTimeWhenPaused, totalPallets]);
+  }, [isCounting, startTime, totalPallets, pausedFor]);
 
   return (
     <div className="score-counter">
@@ -228,17 +225,20 @@ function App() {
       <div className="score-display">
         <hr className="ct"/>
         <h2>{t('ScoreCounter.palam')}{totalPallets}</h2>
-        <h3>{t('ScoreCounter.palperh')}{paused ? (frozenRate !== null ? frozenRate.toFixed(2) : '--') : palletRate.toFixed(2)}</h3>
+        <h3>{t('ScoreCounter.palperh')}{palletRate.toFixed(2)}</h3>
         <p>
           {t('ScoreCounter.eltim')} {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
         </p>
-        {(paused || pauseTimer > 0) && <p>{t('ScoreCounter.elptim')}{Math.floor(pauseTimer / 60)}m {pauseTimer % 60}s</p>}
+        <p>
+          {t('ScoreCounter.elptim')}
+          {Math.floor(pausedFor)}min
+        </p>
         <hr className="ct"/>
         </div>
       
 
-      {!isCounting && !paused? (
-        // Input for the initial number of pallets and start time
+      {!isCounting ? (
+        // Input for the start time
         <div className="opt-box">
           <label className="input-desc">
             {t('ScoreCounter.inittime')}
@@ -283,15 +283,15 @@ function App() {
           <button onClick={startOver}>
           {t('ScoreCounter.buttons.startovr')}
           </button>
-          {/* Show the Pause/Resume button only if counting has started */}
+          {/* Show the Pause/Resume button only if counting has started
           {isCounting && (
             <button 
-              onClick={() => setPaused((prev) => !prev)} // Toggle paused state
-              // disabled={pauseTimer >= 150} // UNCOMMENT WHEN setTimeout is fixed
+              onClick={handlePauseClick} // Toggle paused state
+              disabled={pausedFor === 15}
             >
-              {paused ? t('ScoreCounter.buttons.resume') : t('ScoreCounter.buttons.pause')}
+              START THE PAUSE
             </button>
-          )}
+          )} */}
           {/* DEBUG BUTTON */}
           {isCounting && (
             <button onClick={handleDebugClick}>
@@ -300,6 +300,36 @@ function App() {
           )}
         </div>
       )}
+
+      {/* ADD PAUSE BUTTON */}
+      {message ? (
+        <p>{message}</p>
+      ) : (
+        <>
+          {!isAddingPause && remaining > 0 && (
+                <button onClick={handlePauseClick}>Add Pause</button>
+              )}
+              {isAddingPause && (
+                <form onSubmit={handleSubmit}>
+                  <label>
+                    Choose a number (1-{remaining}):
+                    <input
+                      type="number"
+                      min="1"
+                      max={remaining}
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      disabled={remaining === 0}
+                    />
+                  </label>
+                  <button type="submit" disabled={remaining === 0}>
+                    Submit
+                  </button>
+                </form>
+              )}
+        </>
+      )}
+
         {/*HOW-TO SECTION*/}
         {!isCounting ? (
           <div>

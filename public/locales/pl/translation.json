@@ -4,7 +4,7 @@
     },
 
     "App":{
-      "welcome": "Witaj w mojej aplikacji JMP-Tools 0.1.0"
+      "welcome": "Witaj w mojej aplikacji JMP-Tools 0.2.0 [EXPERIMENTAL]"
     },
 
     "ScoreCounter": {
