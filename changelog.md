@@ -1,9 +1,40 @@
-# Changelog
+---
 
-All notable changes to this project will be documented in this file.
+# Welcome to JMP-Tools!
+# What's new?
 
-The format is based on Keep a Changelog,
-and this project adheres to Semantic Versioning.
+---
+
+## [0.2.0b-EXPERIMENTAL] - 2025-01-XX
+
+### Added
+
+- Three new buttons for the navigation bar: "Home", "Calculator App" and "Score History"
+
+- A homepage showing what's new in the App.
+
+- Hamburger menu
+
+- **Weighted calculations:** Calculator app now supports weighted calculations!
+
+### Changed
+
+- Pause function got fully reworked. User can now choose the amount of time spent on break. This function is respecting the rules of JMP's warehouse "scoring on pause" system.
+
+- Debugging buttons are hidden now, and shown only after pressing "Debug mode" button.
+
+- Slightly changed style of the buttons.
+
+- Changed size and font style of the header.
+
+### Removed
+
+- Old pause function that was not practical.
+---
+
+### Planned in the future
+
+- **Score history:** User will be able to save and store his score at the "Score history" tab.
 
 ## [0.1.0] - 2025-01-06
 

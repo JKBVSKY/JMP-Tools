@@ -1,0 +1,87 @@
+/* HomePage.css */
+.changelog-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .changelog-container h1,
+  .changelog-container h2 {
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .changelog-container h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  .changelog-container h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  
+  .changelog-container p {
+    line-height: 1.6;
+    color: #ffffff;
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .changelog-container ul {
+    padding-left: 20px;
+  }
+  
+  .changelog-container li {
+    margin-bottom: 8px;
+  }
+  
+  .changelog-container a {
+    color: #0077cc;
+    text-decoration: none;
+  }
+  
+  .changelog-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Add some styling for code blocks and inline code */
+  .changelog-container pre {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  
+  .changelog-container code {
+    font-size: 1.2em;
+    background-color: #f0f0f0;
+    padding: 3px 6px;
+    border-radius: 5px;
+  }
+  
+  /* For tables */
+.changelog-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .changelog-container th,
+  .changelog-container td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .changelog-container th {
+    background-color: #f4f4f4;
+  }
+  
+  /* For task lists */
+  .changelog-container input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  

@@ -15,9 +15,9 @@ function App() {
             <div>
                 <Navigation/>
             </div>
-            <div className="display">
+            {/* <div>
                 <ScoreCounter/>
-            </div>
+            </div> */}
             <Footer/>
         </div>
       );

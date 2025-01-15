@@ -1,34 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from "./LanguageSwitcher";
+import ScoreCounter from "./ScoreCounter"; // Import your ScoreCounter component
+import HomePage from "./HomePage";
 
 const Navigation = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false); // State to manage menu visibility
+  const [isLangMenuVisible, setIsLangMenuVisible] = useState(false); // State to manage menu visibility
+
+  const [currentPage, setCurrentPage] = useState("home"); // State to track the current page
   const { t } = useTranslation();
 
-  const handleLanguageButton = () => {
-    setIsMenuVisible(prevState => !prevState); // Toggle the visibility of the language menu
+  const toggleMenu = () => {
+    setIsMenuVisible(!isMenuVisible);
   };
 
+  const handleLanguageButton = () => {
+    setIsLangMenuVisible(prevState => !prevState); // Toggle the visibility of the language menu
+  };
+
+  const handleLinkClick = (page) => {
+    setCurrentPage(page); // Keep the original functionality
+    setIsMenuVisible(false);   // Close the menu
+  };
+
+  const onCloseMenu = () => {
+    setIsMenuVisible(false);
+    setIsLangMenuVisible(false);
+  };
+
+  const renderContent = () => {
+    switch (currentPage) {
+      case "home":
+        return <HomePage />;
+      case "calculator":
+        return <ScoreCounter />;
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    // Update the document title based on the current page
+    document.title = currentPage === "home" ? "JMP Tools - Home" : "JMP Tools - Score Calculator";
+  }, [currentPage]);
+
   return (
-    <nav className="navbar">
-            <a href="#" className="logo">
-            {t('App.welcome')}
-            </a>
-      <hr/>
-      <div className={"nav-links"}>
-        {/* <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#services">Services</a> */}
+    <div>
+      <nav className="navbar">
+        <a href="#home" onClick={() => setIsMenuVisible(false)} className="logo">JMP TOOLS 0.2.0b-EXPERIMENTAL</a>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          {isMenuVisible ? "Close" : "Menu"}
+        </button>
+        <div className={`nav-links ${isMenuVisible ? "show" : "hide"}`}>
+        <a href="#home" onClick={() => handleLinkClick("home")}>Home</a>
+        <a href="#calculator" onClick={() => handleLinkClick("calculator")}>Calculator App</a>
+        <a href="#scorehistory" onClick={() => handleLinkClick("scorehistory")}>Score History</a>
         <a href="#language" onClick={handleLanguageButton}>Language</a>
       </div>
-      <hr/>
 
-      {/* Conditionally render the language menu */}
-      {isMenuVisible && (
-        <LanguageSwitcher/>
-      )}
-    </nav>
+        {/* Conditionally render the language menu */}
+        {isLangMenuVisible && <LanguageSwitcher />}
+      </nav>
+      <main>
+        {renderContent()} {/* Render the current page content */}
+      </main>
+    </div>
   );
 };
 

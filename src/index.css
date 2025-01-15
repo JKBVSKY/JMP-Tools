@@ -6,6 +6,7 @@
 
 html, body {
   /* height: 100%;  not needed? */ 
+  width: 95%;
   max-width: 1000px;
   margin: 0 auto; /* Resets any unwanted browser margins */
   padding: 0; /* Resets padding */
@@ -28,7 +29,7 @@ body {
   text-align: center;
   color: rgb(255, 255, 255);
   background-color: rgb(0, 0, 0);
-  border: 10px outset #b3000080;
+  border: 6px outset #b3000080;
 }
 
 body::before {
@@ -81,8 +82,9 @@ button {
   border-radius: 10px;
   font-size: 50px;
   line-height: 1;
-  background-color: #9c9c9c;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect */
+  color:#4d4d4d;
+  background-color: #c9c9c9;
+  transition: background-color 0.2s ease, box-shadow 0.1s ease-in-out, color 0.2s ease; /* Smooth hover effect */
   text-transform: uppercase;
   font-family: 'Fira Sans', sans-serif;
   display: block;
@@ -94,8 +96,9 @@ button:active {
 }
 
 button:hover {
+  color: black;
   background-color: #ebebeb; /* Slightly lighter color */
-  box-shadow: 0 0 15px 5px #b30000; /* Box shadow when hovered */
+  box-shadow: 0 0 10px 5px #5f5f5f; /* Box shadow when hovered */
 }
 
 button:not(:hover) {
@@ -114,6 +117,20 @@ button:disabled {
 /* Prevent hover effects when the button is disabled */
 button:disabled:hover {
   background-color: #666; /* Same as default disabled state */
+}
+
+button.debug{
+  color: rgb(90, 0, 0);
+  border-radius: 5px;
+  font-size: 1em;
+  line-height: 1;
+  background-color: #8f0c0c;
+}
+
+button.debug:hover {
+  color: rgb(56, 0, 0);
+  background-color: #a51010; /* Slightly lighter color */
+  box-shadow: 0 0 10px 5px #630c0c; /* Box shadow when hovered */
 }
 
 input {
@@ -180,16 +197,13 @@ h1.calc-title {
   font-weight: 100;
 }
 
-.display {
-  margin-bottom: 52px;
-}
-
 .score-display {
   margin: 25px auto;
 }
 
 .navbar {
-  display: block;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   background-color: #000000;
@@ -202,15 +216,34 @@ h1.calc-title {
 }
 
 .navbar .logo {
-  color: rgb(255, 255, 255);
+  color: rgb(209, 203, 203);
   text-decoration: none;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 3em;
+  padding: 10px 0 0 0;
+  margin: 0px 20px;
+  font-weight: 600;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.menu-toggle {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .navbar .nav-links {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
 .navbar .nav-links a {
@@ -226,13 +259,39 @@ h1.calc-title {
   background-color: #b30000;
 }
 
-.navbar .menu-toggle {
-  display: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
+.nav-links.show {
+  display: flex; /* Show links when the menu is open */
 }
 
+.nav-links.hide {
+  display: none;
+}
+
+.statistics {
+  width: 90%; /* Adjust as needed */
+  max-width: 700px; /* Optional, for a nice contained layout */
+  margin: 0 auto; /* Center the statistics box */
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  background-color: #ffffffd3; /* Optional, for better visibility */
+}
+
+.stat-item {
+  color: rgb(41, 41, 41);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  /* font-family: 'Fira Sans', sans-serif; Matches your button font */
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+.stat-item strong span {
+  color: rgb(197, 64, 64);
+  font-size: 1.1em;
+  line-height: 1;
+}
 /* Responsive styles for smaller screens */
 @media only screen and (max-width: 600px) {
   body {
@@ -241,11 +300,12 @@ h1.calc-title {
   }
 
   h1.calc-title {
-    font-size: 2em;  /* Smaller title for mobile */
+    margin: 0 auto;
+    font-size: 1.9em;  /* Smaller title for mobile */
   }
 
   hr.ct {
-    width: 80%;  /* Wider horizontal rule for smaller screens */
+    width: 60%;  /* Wider horizontal rule for smaller screens */
   }
 
   input {
@@ -259,19 +319,19 @@ h1.calc-title {
   }
 
   input[type="time"] {
-    width: 80%;  /* Full width on small screens */
+    width: 90%;  /* Full width on small screens */
   }
 
   label.input-desc {
-    font-size: 36px;  /* Smaller label font for mobile */
+    font-size: 1.9em;  /* Smaller label font for mobile */
     flex-direction: column;  /* Stack label and input vertically */
     align-items: center;
   }
 
   button {
-    width: 80%;  /* Full width buttons on mobile */
-    font-size: 36px;  /* Smaller button font */
-    line-height: 36px;
+    width: 90%;  /* Full width buttons on mobile */
+    font-size: 2em;  /* Smaller button font */
+    line-height: 1;
   }
 
   .language-switcher {
@@ -283,7 +343,29 @@ h1.calc-title {
   }
 
   .navbar {
-    margin: 0 auto;
-    width: 90%;
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+
+  .navbar .logo {
+    font-size: 1.6em; /* Reduce logo size */
+  }
+
+  .navbar .nav-links {
+    flex-direction: column; /* Stack links vertically on small screens */
+    gap: 8px;
+  }
+
+  .navbar .nav-links a {
+    font-size: 16px; /* Maintain readability */
+    padding: 10px;
+    width: 100%; /* Make links full-width */
+  }
+
+  .statistics {
+    width: 100%; /* Adjust as needed */
+  }
+  
+  .stat-item {
+    font-size: 16px;
   }
 }
