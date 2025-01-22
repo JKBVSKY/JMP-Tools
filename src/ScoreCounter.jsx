@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 
 
@@ -8,6 +9,15 @@ function App() {
   const [startTimeInput, setStartTimeInput] = useState('');
   const [inputValue, setInputValue] = useState("");
   const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState(1); // Tracks the active tab (1 = Main Calculations, 2 = Trucks Loaded, 3 = Summary)
+  const [calculations, setCalculations] = useState(() => {
+    const savedCalculations = localStorage.getItem('calculations');
+    return savedCalculations ? JSON.parse(savedCalculations) : [];
+  })  // State to store the list of saved calculations
+  const [activities, setActivities] = useState(() => {
+    const savedActivities = localStorage.getItem('activities');
+    return savedActivities ? JSON.parse(savedActivities) : [];
+  })  // State to store the list of saved activities
   const [isCounting, setIsCounting] = useState(() => {
     return localStorage.getItem("isCounting") === "true";
   });
@@ -35,27 +45,64 @@ function App() {
   const [remaining, setRemaining] = useState(() => {
     return Number(localStorage.getItem('remaining')) || 15;
   });
+    
   const [isDebugging, setIsDebugging] = useState(false);
-  const [calculations, setCalculations] = useState([]);  // State to store the list of saved calculations
   const [trucks, setTrucks] = useState([]);
-  const [activities, setActivities] = useState([]);  // State to store the list of saved activities
   const { t } = useTranslation();
+  const totalPalletsLoaded = activities.reduce((total, current) => {
+    return total + Number(current.inputPallets);
+  }, 0);
 
   const startOver = () => {
+    const isConfirmed = window.confirm("Are You sure You want to finish Your job and clear the calculations?");
+    if(isConfirmed){
+      setCalculations([]);
+      setActivities([]);
+      // setInitialPallets(0); // REMOVE?
+      setTotalPallets(0);
+      setStartTime(null);
+      setElapsedTime(0);
+      setPalletRate(0);
+      setWeightedRate(0);
+      setInputPallets('');
+      setIsCounting(false);
+      setStartTimeInput('');
+      setIsAddingPause(false);
+      setPausedFor(0);
+      setRemaining(15);
+      setMessage("");
+  
+      // Clear localStorage
+      localStorage.removeItem('calculations');
+      localStorage.removeItem('activities');
+      localStorage.removeItem('totalPallets');
+      localStorage.removeItem('elapsedTime');
+      localStorage.removeItem('palletRate');
+      localStorage.removeItem('weightedRate');
+      localStorage.removeItem('startTime');
+      localStorage.removeItem('isCounting');
+      localStorage.removeItem('isAddingPause');
+      localStorage.removeItem('remaining');
+      localStorage.removeItem('pausedFor');
+      localStorage.removeItem('setMessage');
+    };
+  };
 
-    // setInitialPallets(0); // REMOVE?
+  const turnOff = () => {
+    // Make function to remember previous total pallets and sum with new amount?
     setTotalPallets(0);
     setStartTime(null);
+    // Make function to remember previous elapsed time and sum with new amount?
     setElapsedTime(0);
-    // setPalletRate(0);
+    // setPalletRate(0); I think we shouldn't change palletRate to 0
     setWeightedRate(0);
     setInputPallets('');
     setIsCounting(false);
     setStartTimeInput('');
     setIsAddingPause(false);
-    setPausedFor(0);
-    setRemaining(15);
-    setMessage("");
+    // setPausedFor(0); Pausing is untouched since it's not end of the shift
+    // setRemaining(15);
+    // setMessage("");
 
     // Clear localStorage
     localStorage.removeItem('totalPallets');
@@ -65,10 +112,7 @@ function App() {
     localStorage.removeItem('startTime');
     localStorage.removeItem('isCounting');
     localStorage.removeItem('isAddingPause');
-    localStorage.removeItem('remaining')
-    localStorage.removeItem('pausedFor')
   };
-
   // Persist states in localStorage
   useEffect(() => {
     localStorage.setItem("totalPallets", totalPallets);
@@ -108,6 +152,16 @@ function App() {
     localStorage.setItem("remaining", remaining);
   }, [remaining]);
 
+  useEffect(() => {
+    // Save calculations to localStorage whenever they change
+    localStorage.setItem('calculations', JSON.stringify(calculations));
+  }, [calculations]);
+
+  useEffect(() => {
+    // Save calculations to localStorage whenever they change
+    localStorage.setItem('activities', JSON.stringify(activities));
+  }, [activities]);
+
   //START OF TODAY's ACTIVITY FUNCTION
   const saveActivity = () => {
       // Save the current activity as an object
@@ -124,7 +178,7 @@ function App() {
 
   //START OF CALCULATION SAVER FUNCTION
   const saveCalculation = () => {
-    const isConfirmed = window.confirm("Are you sure you want to save and stop Your calculation?");
+    const isConfirmed = window.confirm("Have you stopped loading trailers and your score counting stopped?");
     if(isConfirmed){
       // Save the current calculation as an object
       const newCalculation = {
@@ -137,7 +191,7 @@ function App() {
   
       // Add the new calculation to the list (use the previous state to ensure it's updated correctly)
       setCalculations(prevCalculations => [newCalculation, ...prevCalculations]); // Add at the beginning
-      startOver();
+      turnOff();
     }
   };
 
@@ -203,6 +257,7 @@ function App() {
     console.log ('============================');
     // console.log (initialPallets + ' initialPallets'); // REMOVE?
     console.log (totalPallets + ' totalPallets');
+    console.log (totalPalletsLoaded + ' totalPalletsLoaded');
     console.log (elapsedTime + ' elapsedTime');
     console.log (palletRate + ' palletRate');
     console.log (isCounting + ' isCounting');
@@ -276,7 +331,7 @@ function App() {
             const newWeightedRate =
               (totalWeightedRate + rate * currentElapsedTime) /
               (totalElapsedTime + currentElapsedTime);
-            console.log(totalWeightedRate, '+', rate, '*', currentElapsedTime, '/', totalElapsedTime, '+', currentElapsedTime);
+            // console.log(totalWeightedRate, '+', rate, '*', currentElapsedTime, '/', totalElapsedTime, '+', currentElapsedTime);
             // console.log(rate);
             // console.log(currentElapsedTime);
             // console.log(totalElapsedTime);
@@ -295,102 +350,111 @@ function App() {
   return (
     <div className="score-counter">
       <h1 className="calc-title">{t('ScoreCounter.title')}</h1>
-      
-      {/* Display the current status only if counting has started*/}
-      <div className="score-display">
-        <hr className="ct"/>
-        <div className='statistics'>
-          <div className='stat-item'>
-            <span>{t('ScoreCounter.palperh')}</span>
-            <strong>
-              <span>{palletRate.toFixed(2)} pal/h</span>
-            </strong>
-          </div>
-          <div className='stat-item'>
-            <span>{t('ScoreCounter.palam')}</span>
-            <strong>
-              <span>{totalPallets} pal</span>
-            </strong>
-          </div>
-          <div className='stat-item'>
-            <span>{t('ScoreCounter.eltim')} </span>
-            <strong>
-              <span>
-                  {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
-              </span>
-            </strong>
-          </div>
-          <div className='stat-item'>
-            <span>{t('ScoreCounter.elptim')}</span>
-            <strong>
-              <span>{Math.floor(pausedFor)} min</span>
-            </strong>
-          </div>
-        </div>
-        <hr className='ct'/>
-        <div className="statistics">
-          <div className="stat-item">
-            <span>Weighted score:</span>
-            <strong>
-              <span> {weightedRate.toFixed(2)} pal/h</span>
-            </strong>
-          </div>
-          <div className="stat-item">
-            <span>Total pallets loaded:</span>
-            <strong>
-              <span> (WIP) pal</span>
-            </strong>
-          </div>
-          <div className="stat-item">
-            <span>Current elapsed time:</span>
-            <strong>
-              <span> (WIP)</span>
-            </strong>
-          </div>
-        </div>
-        <hr className='ct'/>
-        <p>- Short statistics -</p>
-        <p>
-          <span>[Score: {palletRate.toFixed(2)}] </span>
-          <span>[Pal: {totalPallets}] </span>
-          <span>
-            [Time: {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s]
-          </span>
-        </p>
-        <hr className="ct"/>
+      {/* Tab Buttons */}
+      <div className="tabs">
+        <button onClick={() => setActiveTab(1)} className={activeTab === 1 ? "active" : ""}>{t("ScoreCounter.tab-1")}</button>
+        <button onClick={() => setActiveTab(2)} className={activeTab === 2 ? "active" : ""}>{t("ScoreCounter.tab-2")}</button>
+        <button onClick={() => setActiveTab(3)} className={activeTab === 3 ? "active" : ""}>{t("ScoreCounter.tab-3")}</button>
       </div>
-
-      {/* Display the saved score after finishing calculations */}
-      <div>
-        <p>- Calculation Results -</p>
-        <ul>
-          {calculations.map((calc, index) => (
-            <li key={index}>
-              <strong>Calculation #{index + 1} ({calc.timestamp})</strong><br />
-              Rate: {calc.palletRate} pallets/hour<br />
-              Elapsed time: {formatElapsedTime(calc.elapsedTime)}<br />
-              Total pallets: {calc.totalPallets}<br />
-              Paused for: {calc.pausedFor} minutes
-            </li>
-          ))}
-        </ul>
-        <hr className='ct'/>
-      </div>
-
-      {/* Display the array of every truck loaded with amount of pallets and timestamp */}
-      <div>
-        <p>- Today's activity -</p>
-        <ul>
-          {activities.map((a, index) => (
-            <li key={index}>
-              <strong>Truck #{a.truckNumber} ({a.timestamp})</strong><br />
-              Pallets loaded: {a.inputPallets}<br />
-              Work efficiency: (WIP)
-              Loading time: (WIP)<br />
-            </li>
-          ))}
-        </ul>
-        <hr className='ct'/>
+      {/* Tab Content */}
+      <div className='tab-content'>
+        {activeTab === 1 && (
+            <div>
+              <div className='statistics'>
+                {weightedRate <= 0 && (
+                  <div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.palperh')}</span>
+                      <strong>
+                        <span>{palletRate.toFixed(2)} pal/h</span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.palam')}</span>
+                      <strong>
+                        <span>{totalPallets} pal</span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.eltim')} </span>
+                      <strong>
+                        <span>
+                            {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
+                        </span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.elptim')}</span>
+                      <strong>
+                        <span>{Math.floor(pausedFor)} min</span>
+                      </strong>
+                    </div>
+                  </div>
+                )}
+                {weightedRate > 0 && (
+                  <div>
+                    <div className="stat-item">
+                      <span>{t('ScoreCounter.apalperh')}</span>
+                      <strong>
+                        <span> {weightedRate.toFixed(2)} pal/h</span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.palam')}</span>
+                      <strong>
+                        <span>{totalPalletsLoaded} pal</span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.eltim')} </span>
+                      <strong>
+                        <span>
+                            {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
+                        </span>
+                      </strong>
+                    </div>
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.elptim')}</span>
+                      <strong>
+                        <span>{Math.floor(pausedFor)} min</span>
+                      </strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+        )}
+        {activeTab === 2 && (
+          <div>
+            {/* Display the array of every truck loaded with amount of pallets and timestamp */}
+              <ul className='statistics'>
+                {activities.map((a, index) => (
+                  <li key={index} className='stat-item' style={{ display: 'block' }}>
+                    <strong><p>Truck #{a.truckNumber} ({a.timestamp})</p></strong>
+                    <p>Pallets loaded: {a.inputPallets}</p>
+                    <hr/>
+                  </li>
+                ))}
+              </ul>
+          </div>
+        )}
+        {activeTab === 3 && (
+          <div>
+            {/* Display the saved score after finishing calculations */}
+              <ul className='statistics'>
+                {calculations.map((calc, index) => (
+                  <li key={index} className='stat-item' style={{ display: 'block' }}>
+                    <strong>Calculation #{index + 1} ({calc.timestamp})</strong><br />
+                    Rate: {calc.palletRate} pallets/hour<br />
+                    Elapsed time: {formatElapsedTime(calc.elapsedTime)}<br />
+                    Total pallets: {calc.totalPallets}<br />
+                    Paused for: {calc.pausedFor} minutes
+                    <hr/>
+                  </li>
+                ))}
+              </ul>
+          </div>
+        )}
       </div>
 
       {!isCounting ? (
@@ -412,6 +476,13 @@ function App() {
           <button onClick={startCounting} disabled={startTimeInput === ''}>
             {t('ScoreCounter.buttons.startct')}
           </button>
+          {palletRate > 0 && (
+            <div>
+              <button onClick={startOver}>
+              {t('ScoreCounter.buttons.startovr')}
+              </button>
+            </div>
+          )}
           <button className="debug" onClick={toggleDebugging}>
             {isDebugging ? "Disable Debugging" : "Enable Debugging"}
           </button>
@@ -429,6 +500,20 @@ function App() {
       ) : (
         // After starting, show the option to add additional pallets
         <div className="opt-box">
+          {/* <TextField
+            label="Enter value"
+            variant="filled"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            style={{ marginBottom: '20px' }} // Inline styles
+            InputProps={{
+              style: { color: 'black', backgroundColor: 'white' }, // Customize the input text
+            }}
+            InputLabelProps={{
+              style: { color: 'gray' }, // Customize the label text
+            }}
+            fullWidth
+          /> */}
           <label className='input-desc'>
             {t('ScoreCounter.addpal')}
             <br/>
@@ -450,7 +535,7 @@ function App() {
           ) : (
             <>
               {!isAddingPause && isCounting &&remaining > 0 && (
-                    <button onClick={handlePauseClick}>Add Pause</button>
+                    <button onClick={handlePauseClick}>{t("ScoreCounter.buttons.addpause")}</button>
                   )}
                   {isAddingPause && (
                     <form onSubmit={handleSubmit}>
@@ -472,9 +557,9 @@ function App() {
                   )}
             </>
           )}
-          <button onClick={saveCalculation}>Save Calculation</button>
+          <button onClick={saveCalculation}>{t("ScoreCounter.buttons.turnoff")}</button>
           <button onClick={startOver}>
-          {t('ScoreCounter.buttons.startovr')}
+            {t('ScoreCounter.buttons.startovr')}
           </button>
           {/* DEBUG BUTTON */}
           <button className="debug" onClick={toggleDebugging}>
@@ -497,29 +582,32 @@ function App() {
         {/*HOW-TO SECTION*/}
         {!isCounting ? (
           <div>
-            <hr/><br/>
+            <hr className='red'/><br/>
             <h2>{t('ScoreCounter.howto')}</h2>
             <p>
               <br/><br/>
               <span className="highlight">{t('ScoreCounter.startat-label')} </span>{t('ScoreCounter.startat-dsc')}
               <br/><br/>
             </p>
-            <br/><hr/>
+            <br/><hr className='red'/>
           </div>
         ) : (
           // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
           <div>
-            <hr/><br/>
+            <hr className='red'/><br/>
             <h2>{t('ScoreCounter.howto')}</h2>
             <br/>
             <p>
                 <span className="highlight">{t('ScoreCounter.addpall-label')}</span>{t('ScoreCounter.addpall-dsc')}
                 <br/><br/>
+                <span className="highlight">{t('ScoreCounter.pause-label')}</span>{t('ScoreCounter.pause-dsc')}
+                <br/><br/>
+                <span className="highlight">{t('ScoreCounter.turnoff-label')}</span>{t('ScoreCounter.turnoff-dsc')}
+                <br/><br/>
                 <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
                 <br/><br/>
-                <span className="highlight">{t('ScoreCounter.pauseresume-label')}</span>{t('ScoreCounter.pauseresume-dsc')}
             </p>
-            <br/><hr/>
+            <br/><hr className='red'/>
           </div>
         )}
     </div>

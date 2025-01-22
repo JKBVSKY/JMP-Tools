@@ -49,6 +49,7 @@ const Navigation = () => {
     <div>
       <nav className="navbar">
         <a href="#home" onClick={() => setIsMenuVisible(false)} className="logo">JMP TOOLS 0.2.0b-EXPERIMENTAL</a>
+        <hr className="red-short"/>
         <button className="menu-toggle" onClick={toggleMenu}>
           {isMenuVisible ? "Close" : "Menu"}
         </button>
@@ -58,7 +59,7 @@ const Navigation = () => {
         <a href="#scorehistory" onClick={() => handleLinkClick("scorehistory")}>Score History</a>
         <a href="#language" onClick={handleLanguageButton}>Language</a>
       </div>
-
+      <hr className="red-short"/>
         {/* Conditionally render the language menu */}
         {isLangMenuVisible && <LanguageSwitcher />}
       </nav>

@@ -1,6 +1,8 @@
 {
     "LanguageSwitcher": {
-      "info": "Wybierz preferowany język:"
+      "info": "Wybierz preferowany język:",
+      "en": "Angielski",
+      "pl": "Polski"
     },
 
     "App":{
@@ -9,28 +11,37 @@
 
     "ScoreCounter": {
       "title": "Kalkulator wydajności dla załadunkowych",
-      "palam": "Aktualnie załadowano palet: ",
+      "tab-1": "Wynik",
+      "tab-2": "Załadowane ciężarówki",
+      "tab-3": "Podsumowanie",
+      "palam": "Załadowano palet: ",
       "palperh": "Średnia: ",
+      "apalperh": "Średnia ważona: ",
       "eltim": "Czas ładowania: ",
       "elptim": "Czas przerwy: ",
       "inittime": "Czas rozpoczęcia",
       "addpal": "Dodaj palety",
       "addpal-pholder": "Podaj ilość palet...",
       "buttons": {
-        "startct": "Rozpocznij",
+        "startct": "Zacznij zmianę",
         "updtscr": "Dodaj ilość palet",
-        "startovr": "Zakończ kalkulację",
+        "addpause": "Dodaj przerwę",
+        "turnoff": "Wyłącz",
+        "startovr": "Zakończ zmianę",
         "pause": "Pauza",
         "resume": "Wznów"
       },
       "howto": "Jak używać:",
       "startat-label": "Czas rozpoczęcia: ",
       "startat-dsc": "Ustawia godzinę i minutę, od której rozpocznie się odliczanie wyniku.",
-      "addpall-label": "Dodaj palety: ",
+      "addpall-label": "Dodaj ilość palet: ",
       "addpall-dsc": "Dodaje następne załadowane palety w celu aktualizacji obliczeń wyniku.",
-      "finishcalc-label": "Zakończ kalkulację: ",
-      "finishcalc-dsc": "Resetuje obliczenia Twojego wyniku.",
-      "pauseresume-label": "Pauza/Wznów: ",
-      "pauseresume-dsc": "Wstrzymuje/wznawia obliczanie Twojego wyniku (przydatne, gdy robisz sobie przerwę)."
+      "pause-label": "Dodaj przerwę: ",
+      "pause-dsc": "Dodaje ilość minut spędzonych na przerwie (maks. 15 minut).",
+      "turnoff-label": "Wyłącz: ",
+      "turnoff-dsc": "Wyłącza kalkulację i zapisuje dotychczasowy postęp. Ponowne rozpoczęcie pracy po wyłączeniu uwzględnia poprzednio zapisany wynik (średnia ważona).",
+      "finishcalc-label": "Zakończ zmianę: ",
+      "finishcalc-dsc": "Kończy dzień w pracy. Resetuje ustawienia do zera."
+
     }
 }

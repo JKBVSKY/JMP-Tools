@@ -55,7 +55,7 @@ h1, p.red-text {
   color: rgb(255, 255, 255);
 }
 
-hr {
+hr.red {
   border: 0;
   height: 2px;
   background: linear-gradient(to right, black, #b30000, #000000);
@@ -63,13 +63,17 @@ hr {
   position: relative;
 }
 
-hr.ct {
+hr.red-short {
+  border: 0;
+  height: 2px;
+  background: linear-gradient(to right, black, #b30000, #000000);
   width: 50%;
   margin: 0 auto;
+  position: relative;
 }
 
 .language-switcher button {
-  margin: 25px;
+  margin: 15px auto;
   display: inline-block;
 }
 
@@ -79,7 +83,7 @@ button {
   margin: 12px auto;
   cursor: pointer; /* Indicate it’s clickable */
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 50px;
   line-height: 1;
   color:#4d4d4d;
@@ -121,7 +125,7 @@ button:disabled:hover {
 
 button.debug{
   color: rgb(90, 0, 0);
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1em;
   line-height: 1;
   background-color: #8f0c0c;
@@ -136,7 +140,6 @@ button.debug:hover {
 input {
   font-family: Arial, Helvetica, sans-serif;
   color: black;
-  width: 50vw;
   max-width: 500px;
   height: 70px;
   padding: 0px 20px 0px 20px;
@@ -183,6 +186,7 @@ label.input-desc {
 }
 
 input.custom-input {
+  width: 100%;
   margin: 0 auto;
   display: block;
 }
@@ -197,9 +201,7 @@ h1.calc-title {
   font-weight: 100;
 }
 
-.score-display {
-  margin: 25px auto;
-}
+
 
 .navbar {
   display: flex;
@@ -220,7 +222,7 @@ h1.calc-title {
   text-decoration: none;
   font-size: 3em;
   padding: 10px 0 0 0;
-  margin: 0px 20px;
+  margin: 0px 20px 20px 20px;
   font-weight: 600;
   font-family: 'Fira Sans', sans-serif;
 }
@@ -239,6 +241,7 @@ h1.calc-title {
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .navbar .nav-links {
@@ -267,13 +270,17 @@ h1.calc-title {
   display: none;
 }
 
+.score-counter {
+  margin: 0 auto;
+}
+
 .statistics {
-  width: 90%; /* Adjust as needed */
-  max-width: 700px; /* Optional, for a nice contained layout */
+  width: 90%;
   margin: 0 auto; /* Center the statistics box */
   padding: 10px;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
+  border-radius: 0px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   background-color: #ffffffd3; /* Optional, for better visibility */
 }
 
@@ -281,7 +288,8 @@ h1.calc-title {
   color: rgb(41, 41, 41);
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
   /* font-family: 'Fira Sans', sans-serif; Matches your button font */
   font-size: 24px;
   line-height: 1.5;
@@ -292,6 +300,57 @@ h1.calc-title {
   font-size: 1.1em;
   line-height: 1;
 }
+
+.tabs {
+  width: 90%;
+  display: flex;
+  margin: 0 auto;
+  gap: 0px;
+}
+
+.tabs button {
+  flex: 1 1 auto;
+  font-size: 1rem;
+  margin-bottom: 0;
+  padding: 10px;
+  border: none; /* Remove all borders initially */
+  border-radius: 0; /* Overrides any inherited border-radius */
+  border-top-left-radius: 10px; /* Rounded top-left corner */
+  border-top-right-radius: 10px; /* Rounded top-right corner */
+  border-right:1px black solid;
+  border-bottom: 1px rgb(192, 192, 192) solid;
+  background: #ffffffd3;
+  cursor: pointer;
+  text-align: center; /* Centers the text inside the buttons */
+  box-sizing: border-box; /* Includes padding in the button's width */
+}
+
+.tabs button:active {
+  transform: none;
+}
+
+.tabs button:last-child {
+  margin-right: 0; /* Removes margin from the last button */
+  border-right: none;
+}
+
+.tabs button.active {
+  background: #b3000080;
+  color: white;
+  border-bottom: none;
+}
+
+.tabs button:hover {
+  box-shadow: none;
+}
+
+
+.tab-content {
+  /* padding: 0rem; */
+  /* border: 1px solid #ddd; */
+  /* border-radius: 5px; */
+}
+
 /* Responsive styles for smaller screens */
 @media only screen and (max-width: 600px) {
   body {
@@ -309,7 +368,6 @@ h1.calc-title {
   }
 
   input {
-    width: 80%;  /* Full width on small screens */
     font-size: 40px;  /* Adjust font size */
   }
 
@@ -329,7 +387,7 @@ h1.calc-title {
   }
 
   button {
-    width: 90%;  /* Full width buttons on mobile */
+    width: 100%;  /* Full width buttons on mobile */
     font-size: 2em;  /* Smaller button font */
     line-height: 1;
   }
@@ -338,10 +396,31 @@ h1.calc-title {
     margin-top: 20px; /* Adjust for mobile layout */
   }
 
+  .opt-box button {
+    width: 200px;
+    padding: 10px 15px; /* Adjust spacing */
+    margin: 10px auto; /* Consistent spacing between buttons */
+    font-size: 1rem;
+  }
+
+  .opt-box button:active {
+    transform: scale(0.98); /* Slight "press" effect on click */
+  }
+
   .opt-box {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Include padding and border in width calculation */
     margin-top: 40px;  /* Adjust spacing for mobile */
   }
 
+  input.custom-input {
+    width: 100%;
+    margin: 0; /* Remove any horizontal margin */
+    display: block; /* Keep block display */
+  }
+  
   .navbar {
     padding: 10px; /* Adjust padding for smaller screens */
   }
@@ -360,12 +439,26 @@ h1.calc-title {
     padding: 10px;
     width: 100%; /* Make links full-width */
   }
-
+  
   .statistics {
-    width: 100%; /* Adjust as needed */
+    width: 100%;
+  }
+
+  .stat-item {
+    font-size: 1rem;
+  }
+
+  .tabs {
+    width: 100%;
+    margin: 0 auto;
   }
   
-  .stat-item {
-    font-size: 16px;
+  .tabs button {
+    padding: 10px;
+    font-size: 0.7rem;
+  }
+
+  .tab-content {
+    margin: 0 auto;
   }
 }

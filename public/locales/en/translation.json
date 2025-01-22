@@ -1,6 +1,8 @@
 {
     "LanguageSwitcher": {
-      "info": "Select your preferred language:"
+      "info": "Select your preferred language:",
+      "en": "English",
+      "pl": "Polish"
     },
 
     "App":{
@@ -9,17 +11,23 @@
 
     "ScoreCounter": {
       "title": "Score calculator for truck loaders",
-      "palam": "Current Pallets Loaded: ",
-      "palperh": "Pallets per Hour: ",
+      "tab-1": "Main Calculations",
+      "tab-2": "Trucks Loaded",
+      "tab-3": "Summary",
+      "palam": "Pallets Loaded: ",
+      "palperh": "Your Score: ",
+      "apalperh": "Weighted Score: ",
       "eltim": "Elapsed Time: ",
       "elptim": "Time on break: ",
       "inittime": "Start time",
       "addpal": "Add pallets",
       "addpal-pholder": "Type the amount of pallets...",
       "buttons": {
-        "startct": "Begin calculations",
+        "startct": "Start shift",
         "updtscr": "Add pallets",
-        "startovr": "Finish calculations",
+        "addpause": "Add break",
+        "turnoff": "Turn off",
+        "startovr": "End shift",
         "pause": "Pause",
         "resume": "Resume"
       },
@@ -28,9 +36,11 @@
       "startat-dsc": "Sets the hour and minute at which your score began counting down.",
       "addpall-label": "Add pallets: ",
       "addpall-dsc": "Adds the next pallets You've loaded to update the score calculation.",
-      "finishcalc-label": "Finish calculations: ",
-      "finishcalc-dsc": "Resets the calculation of Your score.",
-      "pauseresume-label": "Pause/Resume: ",
-      "pauseresume-dsc": "Pauses/Resumes the calculation of Your score (useful when You go on Your break)."
+      "pause-label": "Add break: ",
+      "pause-dsc": "Adds the amount of minutes spent on a break (max. 15 minutes).",
+      "turnoff-label": "Turn off: ",
+      "turnoff-dsc": "Turns off the calculations and saves the actual progress. Restarting after a shutdown takes into account the previously saved result (weighted average).",
+      "finishcalc-label": "End shift: ",
+      "finishcalc-dsc": "Ends the day at work. Resets settings to zero."
     }
 }

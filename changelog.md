@@ -5,7 +5,7 @@
 
 ---
 
-## [0.2.0b-EXPERIMENTAL] - 2025-01-XX
+## [0.2.0c-EXPERIMENTAL] - 2025-01-XX
 
 ### Added
 
@@ -16,6 +16,14 @@
 - Hamburger menu
 
 - **Weighted calculations:** Calculator app now supports weighted calculations!
+
+- **Tabs:** Introduced a tabbed interface for improved navigation and organization.
+
+  - **Main Calculations Tab**: Displays detailed calculations.
+
+  - **Trucks Loaded Tab**: Dedicated tab for tracking loaded trucks.
+
+  - **Summary Tab**: Provides a summary of calculations.
 
 ### Changed
 
@@ -30,11 +38,16 @@
 ### Removed
 
 - Old pause function that was not practical.
----
+
+### Updated
+
+- Translations are up to date now!
 
 ### Planned in the future
 
 - **Score history:** User will be able to save and store his score at the "Score history" tab.
+
+---
 
 ## [0.1.0] - 2025-01-06
 
