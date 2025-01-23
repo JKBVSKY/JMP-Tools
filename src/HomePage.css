@@ -1,5 +1,6 @@
 /* HomePage.css */
 .changelog-container {
+    text-align: left;
     padding: 20px;
     font-family: Arial, sans-serif;
     max-width: 800px;
@@ -7,7 +8,9 @@
   }
   
   .changelog-container h1,
-  .changelog-container h2 {
+  .changelog-container h2,
+  .changelog-container h3 {
+    text-align: center;
     color: #ffffff;
     font-family: 'Roboto', sans-serif;
   }

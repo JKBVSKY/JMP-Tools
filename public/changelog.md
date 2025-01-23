@@ -5,7 +5,7 @@
 
 ---
 
-## [0.2.0c-EXPERIMENTAL] - 2025-01-XX
+## [0.2.0 OUT NOW!] - 2025-01-23
 
 ### Added
 
@@ -25,13 +25,19 @@
 
   - **Summary Tab**: Provides a summary of calculations.
 
+### Fixed
+
+- Fixed a bug where the loading time could be a negative value.
+
+- Removed the possibility of unexpected behaviour when adding break time.
+
 ### Changed
 
 - Pause function got fully reworked. User can now choose the amount of time spent on break. This function is respecting the rules of JMP's warehouse "scoring on pause" system.
 
-- Debugging buttons are hidden now, and shown only after pressing "Debug mode" button.
+- Debugging buttons are hidden now, and shown only after pressing "Enable debugging" button.
 
-- Slightly changed style of the buttons.
+- Slightly changed the design of buttons.
 
 - Changed size and font style of the header.
 
@@ -46,6 +52,18 @@
 ### Planned in the future
 
 - **Score history:** User will be able to save and store his score at the "Score history" tab.
+
+- **Tiers:** User will be able to see his score tier in real time and approx. bonus remuneration.
+
+- **Time converter:** A simple tool allowing to convert decimal time values to normal time.
+
+- **Pallets predictor:** An useful tool helping to predict the remaining amount of pallets that the packaging worker will produce.
+
+- **Packaging section score calculator:** A score calculator for packaging section.
+
+- **More statistics for score counter:** More information for better control over user's score.
+
+- **Adjustable values:** For better score synchronization.
 
 ---
 

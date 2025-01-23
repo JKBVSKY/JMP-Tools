@@ -45,6 +45,9 @@ function App() {
   const [remaining, setRemaining] = useState(() => {
     return Number(localStorage.getItem('remaining')) || 15;
   });
+  const [hasSavedActivity, setHasSavedActivity] = useState(() => {
+    return (localStorage.getItem("hasSavedActivity")) === "true";
+  })
     
   const [isDebugging, setIsDebugging] = useState(false);
   const [trucks, setTrucks] = useState([]);
@@ -52,6 +55,7 @@ function App() {
   const totalPalletsLoaded = activities.reduce((total, current) => {
     return total + Number(current.inputPallets);
   }, 0);
+  const currentTime = Date.now();  // Current time in milliseconds
 
   const startOver = () => {
     const isConfirmed = window.confirm("Are You sure You want to finish Your job and clear the calculations?");
@@ -71,6 +75,7 @@ function App() {
       setPausedFor(0);
       setRemaining(15);
       setMessage("");
+      setHasSavedActivity(false);
   
       // Clear localStorage
       localStorage.removeItem('calculations');
@@ -85,6 +90,7 @@ function App() {
       localStorage.removeItem('remaining');
       localStorage.removeItem('pausedFor');
       localStorage.removeItem('setMessage');
+      localStorage.removeItem('hasSavedActivity');
     };
   };
 
@@ -162,6 +168,10 @@ function App() {
     localStorage.setItem('activities', JSON.stringify(activities));
   }, [activities]);
 
+  useEffect(() => {
+    localStorage.setItem("hasSavedActivity", hasSavedActivity);
+  }, [hasSavedActivity]);
+
   //START OF TODAY's ACTIVITY FUNCTION
   const saveActivity = () => {
       // Save the current activity as an object
@@ -191,6 +201,7 @@ function App() {
   
       // Add the new calculation to the list (use the previous state to ensure it's updated correctly)
       setCalculations(prevCalculations => [newCalculation, ...prevCalculations]); // Add at the beginning
+      setHasSavedActivity(true); // Update state when saveActivity is called
       turnOff();
     }
   };
@@ -220,8 +231,16 @@ function App() {
   if (!startTime) { // Allow setting `startTime` only once
       const [hours, minutes] = startTimeInput.split(":").map((num) => parseInt(num, 10));
       const startDate = new Date();
+
       startDate.setHours(hours, minutes, 0, 0); // Set to the user-provided time
-      
+
+      // Check if the chosen time is in the future (relative to now)
+      if (startDate.getTime() > currentTime) {
+        // Subtract 24 hours to handle crossing over into the previous day
+        startDate.setDate(startDate.getDate() - 1);
+      }
+
+      // Get the timestamp and set the state
       const timestamp = startDate.getTime();
       setStartTime(timestamp); // Save the timestamp
       setTotalPallets(Number(inputPallets)); // Set the initial number of pallets loaded
@@ -430,8 +449,8 @@ function App() {
               <ul className='statistics'>
                 {activities.map((a, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
-                    <strong><p>Truck #{a.truckNumber} ({a.timestamp})</p></strong>
-                    <p>Pallets loaded: {a.inputPallets}</p>
+                    <strong><p>{t('ScoreCounter.truck')} #{a.truckNumber} ({a.timestamp})</p></strong>
+                    <p>{t('ScoreCounter.palam')} {a.inputPallets}</p>
                     <hr/>
                   </li>
                 ))}
@@ -444,11 +463,11 @@ function App() {
               <ul className='statistics'>
                 {calculations.map((calc, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
-                    <strong>Calculation #{index + 1} ({calc.timestamp})</strong><br />
-                    Rate: {calc.palletRate} pallets/hour<br />
-                    Elapsed time: {formatElapsedTime(calc.elapsedTime)}<br />
-                    Total pallets: {calc.totalPallets}<br />
-                    Paused for: {calc.pausedFor} minutes
+                    <strong>{t('ScoreCounter.tab-3')} #{index + 1} ({calc.timestamp})</strong><br />
+                    {t('ScoreCounter.palperh')}{calc.palletRate} pallets/hour<br />
+                    {t('ScoreCounter.eltim')} {formatElapsedTime(calc.elapsedTime)}<br />
+                    {t('ScoreCounter.palam')} {calc.totalPallets}<br />
+                    {t('ScoreCounter.elptim')} {calc.pausedFor} minutes
                     <hr/>
                   </li>
                 ))}
@@ -474,9 +493,11 @@ function App() {
           </label>
           <br/><br/>
           <button onClick={startCounting} disabled={startTimeInput === ''}>
-            {t('ScoreCounter.buttons.startct')}
+            {hasSavedActivity
+              ? t('ScoreCounter.buttons.continuect')
+              : t('ScoreCounter.buttons.startct')}
           </button>
-          {palletRate > 0 && (
+          {hasSavedActivity && (
             <div>
               <button onClick={startOver}>
               {t('ScoreCounter.buttons.startovr')}
@@ -498,7 +519,7 @@ function App() {
           )}
         </div>
       ) : (
-        // After starting, show the option to add additional pallets
+        // After starting, show additional options
         <div className="opt-box">
           {/* <TextField
             label="Enter value"
@@ -534,9 +555,14 @@ function App() {
             <p>{message}</p>
           ) : (
             <>
-              {!isAddingPause && isCounting &&remaining > 0 && (
-                    <button onClick={handlePauseClick}>{t("ScoreCounter.buttons.addpause")}</button>
-                  )}
+              {!isAddingPause && isCounting && remaining > 0 && (
+                <button 
+                  onClick={handlePauseClick} 
+                  disabled={elapsedTime < 15 * 60} // Disable if elapsed time is less than 15 minutes
+                >
+                  {t("ScoreCounter.buttons.addpause")}
+                </button>                  
+              )}
                   {isAddingPause && (
                     <form onSubmit={handleSubmit}>
                       <label>
