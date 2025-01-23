@@ -1,0 +1,125 @@
+---
+
+# Welcome to JMP-Tools!
+# What's new?
+
+---
+
+## [0.2.0 OUT NOW!] - 2025-01-23
+
+### Added
+
+- Three new buttons for the navigation bar: "Home", "Calculator App" and "Score History"
+
+- A homepage showing what's new in the App.
+
+- Hamburger menu
+
+- **Weighted calculations:** Calculator app now supports weighted calculations!
+
+- **Tabs:** Introduced a tabbed interface for improved navigation and organization.
+
+  - **Main Calculations Tab**: Displays detailed calculations.
+
+  - **Trucks Loaded Tab**: Dedicated tab for tracking loaded trucks.
+
+  - **Summary Tab**: Provides a summary of calculations.
+
+### Fixed
+
+- Fixed a bug where the loading time could be a negative value.
+
+- Removed the possibility of unexpected behaviour when adding break time.
+
+### Changed
+
+- Pause function got fully reworked. User can now choose the amount of time spent on break. This function is respecting the rules of JMP's warehouse "scoring on pause" system.
+
+- Debugging buttons are hidden now, and shown only after pressing "Enable debugging" button.
+
+- Slightly changed the design of buttons.
+
+- Changed size and font style of the header.
+
+### Removed
+
+- Old pause function that was not practical.
+
+### Updated
+
+- Translations are up to date now!
+
+### Planned in the future
+
+- **Score history:** User will be able to save and store his score at the "Score history" tab.
+
+- **Tiers:** User will be able to see his score tier in real time and approx. bonus remuneration.
+
+- **Time converter:** A simple tool allowing to convert decimal time values to normal time.
+
+- **Pallets predictor:** An useful tool helping to predict the remaining amount of pallets that the packaging worker will produce.
+
+- **Packaging section score calculator:** A score calculator for packaging section.
+
+- **More statistics for score counter:** More information for better control over user's score.
+
+- **Adjustable values:** For better score synchronization.
+
+---
+
+## [0.1.0] - 2025-01-06
+
+### Added
+
+- Initial stable release of the app.
+
+- Fully functional pause and resume feature.
+
+- Persistent states through localStorage.
+
+- Accurate pallet rate calculation even during pauses.
+
+- Interval synchronization to ensure smooth rate calculations after resuming.
+
+- Improved user interface with translations using t() for buttons and labels.
+
+- Added a language button that dynamically opens a component for language selection. Users can now switch languages seamlessly.
+
+- Introduced a simple how-to section explaining the app’s functionality and usage.
+
+### Design & UI
+
+- Implemented a visually appealing SVG background with some basic styling.
+
+- Basic Responsiveness
+
+- Ensured the app is compatible with various screen sizes, though further improvements are planned for future updates.
+
+- Current design focuses on simplicity, with plans for future enhancements.
+
+### Fixed
+
+- Resolved issues causing incorrect pallet rate calculations during pause/resume transitions.
+
+- Fixed bugs where pauseTimer would increment incorrectly after refresh.
+
+- Addressed synchronization problems between intervals and states.
+
+### Changed
+
+- Refactored pause functionality to be driven entirely by paused state, reducing complexity.
+
+- Simplified button logic for better maintainability.
+
+### Debugging Features
+
+- Debugging buttons are still present for development purposes. A potential isDebugging state toggle is being considered to streamline this functionality.
+
+### Known Limitations
+
+- Responsiveness may not be perfect on all devices and will undergo refinement in future updates.
+
+### Notes
+
+- This marks the initial version where the app is fully functional and stable. Future updates will follow semantic versioning guidelines.
+
