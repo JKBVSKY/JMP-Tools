@@ -1,6 +1,6 @@
 # JMP-Tools
 
-## Version 0.1.0 STABLE is up!
+## Version 0.2.0 STABLE is up!
 
 A tool designed to allow having better control of the workers' score during their day at the work. For JMP warehouse workers.
 
