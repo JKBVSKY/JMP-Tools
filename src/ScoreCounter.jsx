@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 
@@ -48,7 +49,11 @@ function App() {
   const [hasSavedActivity, setHasSavedActivity] = useState(() => {
     return (localStorage.getItem("hasSavedActivity")) === "true";
   })
-    
+  const [adjustedTime, setAdjustedTime] = useState(() => {
+    return Number(localStorage.getItem('adjustedTime')) || 0;
+  });
+
+  //Vars below doesn't need to be persisted
   const [isDebugging, setIsDebugging] = useState(false);
   const [trucks, setTrucks] = useState([]);
   const { t } = useTranslation();
@@ -56,6 +61,10 @@ function App() {
     return total + Number(current.inputPallets);
   }, 0);
   const currentTime = Date.now();  // Current time in milliseconds
+  const [sessions, setSessions] = useState([]); // Array to hold all sessions
+  const [showAdjustTime, setShowAdjustTime] = useState(false); // Toggle input visibility
+
+
 
   const startOver = () => {
     const isConfirmed = window.confirm("Are You sure You want to finish Your job and clear the calculations?");
@@ -76,6 +85,7 @@ function App() {
       setRemaining(15);
       setMessage("");
       setHasSavedActivity(false);
+      setAdjustedTime(0);
   
       // Clear localStorage
       localStorage.removeItem('calculations');
@@ -91,6 +101,7 @@ function App() {
       localStorage.removeItem('pausedFor');
       localStorage.removeItem('setMessage');
       localStorage.removeItem('hasSavedActivity');
+      localStorage.removeItem('adjustedTime');
     };
   };
 
@@ -109,6 +120,7 @@ function App() {
     // setPausedFor(0); Pausing is untouched since it's not end of the shift
     // setRemaining(15);
     // setMessage("");
+    setAdjustedTime(0);
 
     // Clear localStorage
     localStorage.removeItem('totalPallets');
@@ -118,6 +130,7 @@ function App() {
     localStorage.removeItem('startTime');
     localStorage.removeItem('isCounting');
     localStorage.removeItem('isAddingPause');
+    localStorage.removeItem('adjustedTime');
   };
   // Persist states in localStorage
   useEffect(() => {
@@ -172,6 +185,10 @@ function App() {
     localStorage.setItem("hasSavedActivity", hasSavedActivity);
   }, [hasSavedActivity]);
 
+  useEffect(() => {
+    localStorage.setItem("adjustedTime", adjustedTime);
+  }, [adjustedTime]);
+
   //START OF TODAY's ACTIVITY FUNCTION
   const saveActivity = () => {
       // Save the current activity as an object
@@ -194,6 +211,8 @@ function App() {
       const newCalculation = {
         palletRate: palletRate.toFixed(2),
         elapsedTime,
+        startTime,
+        endTime: Date.now(),
         totalPallets,
         pausedFor,
         timestamp: new Date().toLocaleString(), // You can add a timestamp for reference
@@ -247,6 +266,9 @@ function App() {
       // setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
       setIsCounting(true); // Start counting
       setInputPallets(""); // Clear the input field after submitting
+    } else {
+      setIsCounting(true); // Start counting
+      setInputPallets(""); // Clear the input field after submitting
     }
   };
 
@@ -282,6 +304,7 @@ function App() {
     console.log (isCounting + ' isCounting');
     console.log (isAddingPause + ' isAddingPause');
     console.log (startTime + ' startTime');
+    console.log(new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' startTime converted');
     console.log ("Paused for:", pausedFor);
     console.log (Date.now() / 1000);
     console.log ("Remaining: ", remaining);
@@ -293,6 +316,21 @@ function App() {
     });
     console.log ('============================');
   }
+
+  const handleSessionCheck = () => {
+    console.clear();
+    if (calculations.length === 0) {
+      console.log('No calculations available.');
+      return;
+    }
+    
+    console.log('[0] Start time: ', calculations[0].startTime);
+    console.log('[0] End time: ', calculations[0].endTime);
+    console.log('Total pallets loaded: ', totalPalletsLoaded);
+    console.log('Total pallets: ', totalPallets);
+  };
+
+
   // END OF DEBUGGING FUNCTIONS
 
   // START OF PAUSE FUNCTIONS
@@ -324,11 +362,22 @@ function App() {
   };
   //END OF PAUSE FUNCTIONS
   
+  //START OF ADJUSTING TIME FUNCTIONS
+  // Function to toggle the input field visibility
+  const toggleAdjustTime = () => {
+    setShowAdjustTime(prev => !prev);
+  };
+
+  const handleAdjustTime = (event) => {
+    setAdjustedTime(Number(event.target.value)); // Convert input to a number
+  };
+  //END OF..
+
   // Update elapsed time and pallet rate every second
   useEffect(() => {
     if (isCounting && startTime !== null) {
       const intervalId = setInterval(() => {
-        const currentElapsedTime = (Date.now() - startTime) / 1000; // Total time since start
+        const currentElapsedTime = (Date.now() - startTime + adjustedTime * 60 * 1000) / 1000; // Total time since start
         setElapsedTime(currentElapsedTime); // Set elapsed time
 
         // Calculate pallets per hour
@@ -345,7 +394,7 @@ function App() {
               (acc, calc) => acc + calc.elapsedTime,
               0
             );
-
+              // console.log('rate: ', rate);
             // Calculate the weighted rate
             const newWeightedRate =
               (totalWeightedRate + rate * currentElapsedTime) /
@@ -364,7 +413,7 @@ function App() {
       // Cleanup interval when pausing or stopping
       return () => clearInterval(intervalId);
     }
-  }, [isCounting, startTime, totalPallets, pausedFor, calculations]);
+  }, [isCounting, startTime, totalPallets, pausedFor, calculations, adjustedTime]);
 
   return (
     <div className="score-counter">
@@ -381,65 +430,120 @@ function App() {
             <div>
               <div className='statistics'>
                 {weightedRate <= 0 && (
-                  <div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.palperh')}</span>
-                      <strong>
-                        <span>{palletRate.toFixed(2)} pal/h</span>
-                      </strong>
-                    </div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.palam')}</span>
-                      <strong>
-                        <span>{totalPallets} pal</span>
-                      </strong>
-                    </div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.eltim')} </span>
-                      <strong>
-                        <span>
-                            {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
-                        </span>
-                      </strong>
-                    </div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.elptim')}</span>
-                      <strong>
-                        <span>{Math.floor(pausedFor)} min</span>
-                      </strong>
-                    </div>
+                  <div className='stat-item'>
+                    <span>{t('ScoreCounter.palperh')}</span>
+                    <strong>
+                      <span>{palletRate.toFixed(2)} pal/h</span>
+                    </strong>
                   </div>
                 )}
                 {weightedRate > 0 && (
-                  <div>
-                    <div className="stat-item">
-                      <span>{t('ScoreCounter.apalperh')}</span>
-                      <strong>
-                        <span> {weightedRate.toFixed(2)} pal/h</span>
-                      </strong>
-                    </div>
+                  <div className="stat-item">
+                  <span>{t('ScoreCounter.apalperh')}</span>
+                  <strong>
+                    <span> {weightedRate.toFixed(2)} pal/h</span>
+                  </strong>
+                </div>
+                )}
+                <div className='stat-item'>
+                  <span>{t('ScoreCounter.palam')}</span>
+                  <strong>
+                    <span>{totalPallets} pal</span>
+                  </strong>
+                </div>
+                <div className='stat-item'>
+                  <span>{t('ScoreCounter.eltim')} </span>
+                  <strong>
+                    <span>
+                        {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
+                    </span>
+                    <EditIcon 
+                      onClick={toggleAdjustTime} 
+                      style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '16px' }} 
+                    />
+                  </strong>
+                </div>
+                <div className='stat-item'>
+                  {showAdjustTime && (
+                    <label>
+                      {t('ScoreCounter.adjtim')}
+                      <input
+                        type="number"
+                        value={adjustedTime}
+                        onChange={handleAdjustTime}
+                      />
+                    </label>
+                  )}
+                </div>
+                {pausedFor > 0 && (
+                  <div className='stat-item'>
+                  <span>{t('ScoreCounter.elptim')}</span>
+                  <strong>
+                    <span>{Math.floor(pausedFor)} min</span>
+                  </strong>
+                </div>
+                )}
+                {startTime != null && (
+                  <div><hr />
                     <div className='stat-item'>
-                      <span>{t('ScoreCounter.palam')}</span>
+                      <span>{t('ScoreCounter.starttime')}</span>
                       <strong>
-                        <span>{totalPalletsLoaded} pal</span>
-                      </strong>
-                    </div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.eltim')} </span>
-                      <strong>
-                        <span>
-                            {Math.floor(elapsedTime / 3600)}h {Math.floor((elapsedTime % 3600) / 60)}m {Math.floor(elapsedTime % 60)}s
-                        </span>
-                      </strong>
-                    </div>
-                    <div className='stat-item'>
-                      <span>{t('ScoreCounter.elptim')}</span>
-                      <strong>
-                        <span>{Math.floor(pausedFor)} min</span>
+                        <span>{new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </strong>
                     </div>
                   </div>
                 )}
+                {(palletRate > 47 || weightedRate > 47) && (() => {
+                  if (calculations.length > 0) {
+                    // Calculate total pallets loaded
+                    const totalPalletsLoaded = activities.reduce((total, current) => {
+                      return total + Number(current.inputPallets);
+                    }, 0);
+
+                    // Calculate total time worked (in hours)
+                    const totalTimeWorked = calculations.reduce((sum, session) => {
+                      const sessionDuration = session.endTime - session.startTime;
+                      return sum + sessionDuration;
+                    }, 0);
+
+                    // Calculate projected time to reach 47 pallets/hour
+                    const hoursToReach47 = totalPalletsLoaded / 47; // Hours to achieve 47 pallets/hour
+                    const additionalTimeMs = hoursToReach47 * 60 * 60 * 1000; // Convert to milliseconds
+                    const targetTime = new Date(startTime + additionalTimeMs - totalTimeWorked - (adjustedTime * 60 * 1000)); // Adjusted target time
+
+                    // ✅ Check if targetTime is still in the future
+                    if (targetTime > Date.now()) {
+                      return (
+                        <div className='stat-item'>
+                          <span>{t('ScoreCounter.47at')}</span>
+                          <strong>
+                            <span>
+                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </strong>
+                        </div>
+                      );
+                    }
+                  } else if (startTime && totalPalletsLoaded > 0) {
+                    const hoursToReach47 = totalPalletsLoaded / 47; // Calculate hours needed
+                    const targetTime = new Date(startTime + hoursToReach47 * 60 * 60 * 1000 - (adjustedTime * 60 * 1000)); // Add hours in milliseconds
+
+                    // ✅ Check if targetTime is still in the future
+                    if (targetTime > Date.now()) {
+                      return (
+                        <div className='stat-item'>
+                          <span>{t('ScoreCounter.47at')}</span>
+                          <strong>
+                            <span>
+                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </strong>
+                        </div>
+                      );
+                    }
+                  }
+                  return null; // Return nothing if conditions are not met
+                })()}
               </div>
             </div>
         )}
@@ -449,7 +553,7 @@ function App() {
               <ul className='statistics'>
                 {activities.map((a, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
-                    <strong><p>{t('ScoreCounter.truck')} #{a.truckNumber} ({a.timestamp})</p></strong>
+                    <strong><p>{t('ScoreCounter.truck')} #{a.truckNumber} - {new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></strong>
                     <p>{t('ScoreCounter.palam')} {a.inputPallets}</p>
                     <hr/>
                   </li>
@@ -463,8 +567,10 @@ function App() {
               <ul className='statistics'>
                 {calculations.map((calc, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
-                    <strong>{t('ScoreCounter.tab-3')} #{index + 1} ({calc.timestamp})</strong><br />
+                    <strong>{t('ScoreCounter.tab-3')} #{index + 1}</strong><br />
                     {t('ScoreCounter.palperh')}{calc.palletRate} pallets/hour<br />
+                    Started loading at: {new Date(calc.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}<br />
+                    Turned off at: {new Date(calc.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />
                     {t('ScoreCounter.eltim')} {formatElapsedTime(calc.elapsedTime)}<br />
                     {t('ScoreCounter.palam')} {calc.totalPallets}<br />
                     {t('ScoreCounter.elptim')} {calc.pausedFor} minutes
@@ -513,6 +619,7 @@ function App() {
               <button className="debug" onClick={handleDebugClick}>
                 Console.log DEBUG
               </button>
+              <button className="debug" onClick={handleSessionCheck}>Session Check</button>
               <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
               <button className="debug" onClick={() => setPalletRate(0)}>Clear Rate</button>
             </div>
@@ -596,6 +703,7 @@ function App() {
               <button className="debug" onClick={handleDebugClick}>
                 Console.log DEBUG
               </button>
+              <button className="debug" onClick={handleSessionCheck}>Session Check</button>
               <button className="debug" onClick={handlePauseReset}>
                 Reset Pause
               </button>

@@ -56,7 +56,7 @@ const Navigation = ({ setCurrentPage }) => {
           onClick={() => setIsMenuVisible(false)}
           className="logo"
         >
-          JMP-TOOLS [0.2.0]
+          JMP-TOOLS [0.2.1]
         </a>        <hr className="red-short"/>
         <button className="menu-toggle" onClick={toggleMenu}>
           {isMenuVisible ? "Close" : "Menu"}
