@@ -5,10 +5,6 @@
       "pl": "Polish"
     },
 
-    "App":{
-      "welcome": "Welcome to my JMP-Tools app 0.2.0b [EXPERIMENTAL]"
-    },
-
     "ScoreCounter": {
       "title": "Score calculator for truck loaders",
       "tab-1": "Main Calculations",
@@ -19,7 +15,10 @@
       "palperh": "Your Score: ",
       "apalperh": "Weighted Score: ",
       "eltim": "Elapsed Time: ",
+      "adjtim": "Adjust Time (minutes):",
       "elptim": "Time on break: ",
+      "starttime": "Time of Beginning: ",
+      "47at": "47 pal/h: ",
       "inittime": "Start time",
       "addpal": "Add pallets",
       "addpal-pholder": "Type the amount of pallets...",

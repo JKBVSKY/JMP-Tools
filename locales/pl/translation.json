@@ -5,10 +5,6 @@
       "pl": "Polski"
     },
 
-    "App":{
-      "welcome": "Witaj w mojej aplikacji JMP-Tools 0.2.0b [EXPERIMENTAL]"
-    },
-
     "ScoreCounter": {
       "title": "Kalkulator wydajności dla załadunkowych",
       "tab-1": "Wynik",
@@ -19,7 +15,10 @@
       "palperh": "Średnia: ",
       "apalperh": "Średnia ważona: ",
       "eltim": "Czas ładowania: ",
+      "adjtim": "Dostosuj czas (minuty):",
       "elptim": "Czas przerwy: ",
+      "starttime": "Czas rozpoczęcia: ",
+      "47at": "47 pal/h: ",
       "inittime": "Czas rozpoczęcia",
       "addpal": "Dodaj palety",
       "addpal-pholder": "Podaj ilość palet...",

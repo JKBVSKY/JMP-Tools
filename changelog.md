@@ -5,7 +5,21 @@
 
 ---
 
-## [0.2.0 OUT NOW!] - 2025-01-23
+## [0.2.1] - 2025-01-31
+
+### Added
+
+- **New Statistics:**
+
+  - **Time of Beginning:** Displays the time of calculations beginning.
+
+  - **47 pal/h at:** Displays the precise time of when the user's score will reach 47 pallets per hour (which is the max score).
+
+- **Adjustable time:** User can now adjust the elapsed time for better score synchronization. 
+
+---
+
+## [0.2.0] - 2025-01-23
 
 ### Added
 
