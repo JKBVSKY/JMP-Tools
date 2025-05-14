@@ -5,6 +5,46 @@
 
 ---
 
+## [0.3.0] OUT NOW! - 2025-05-14
+
+### Added
+
+- **New Statistics:**
+
+  - **Score History:** A very useful function that will allow the user to monitor their work efficiency. It allows the user to save the result of each working day, then calculates and displays the average monthly result of user's score.
+
+### Fixed
+
+- Fixed a bug where the "47 pal/h at" function was showing the wrong time, if user adjusted his time before turning off the calculation.
+
+- Fixed a bug where the summary tab was showing the wrong value of "Turned off at", if user adjusted his time before turning off the calculation.
+
+- Fixed the responsiveness problems with the main score calculator display.
+
+### Reworked
+
+- Changed the menu style (resigned from using the hamburger menu - it just looks better now).
+
+- Restyled the main calculations display - cleaner view, better organization, buttons are inside the display now.
+
+- Navigation uses routes now - no more redirecting to the main page after refreshing.
+
+### Planned in the future
+
+- **Score history:** [DONE]
+
+- **Tiers:** User will be able to see his score tier in real time and approx. bonus remuneration.
+
+- **Time converter:** A simple tool allowing to convert decimal time values to normal time.
+
+- **Pallets predictor:** An useful tool helping to predict the remaining amount of pallets that the packaging worker will produce.
+
+- **Packaging section score calculator:** A score calculator for packaging section.
+
+- **More statistics for score counter:** [DONE]
+
+- **Adjustable values:** For better score synchronization.
+
 ## [0.2.1] - 2025-01-31
 
 ### Added
@@ -62,22 +102,6 @@
 ### Updated
 
 - Translations are up to date now!
-
-### Planned in the future
-
-- **Score history:** User will be able to save and store his score at the "Score history" tab.
-
-- **Tiers:** User will be able to see his score tier in real time and approx. bonus remuneration.
-
-- **Time converter:** A simple tool allowing to convert decimal time values to normal time.
-
-- **Pallets predictor:** An useful tool helping to predict the remaining amount of pallets that the packaging worker will produce.
-
-- **Packaging section score calculator:** A score calculator for packaging section.
-
-- **More statistics for score counter:** More information for better control over user's score.
-
-- **Adjustable values:** For better score synchronization.
 
 ---
 
