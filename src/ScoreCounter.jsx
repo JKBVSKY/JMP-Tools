@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
+import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
+import ScoreHistory from "./ScoreHistory";
 
 
-function App() {
+function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
   // const [initialPallets, setInitialPallets] = useState(0); // REMOVE?
   const [inputPallets, setInputPallets] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
@@ -19,6 +22,16 @@ function App() {
     const savedActivities = localStorage.getItem('activities');
     return savedActivities ? JSON.parse(savedActivities) : [];
   })  // State to store the list of saved activities
+  const [isDebugging, setIsDebugging] = useState(false);
+  const [trucks, setTrucks] = useState([]);
+  const { t } = useTranslation();
+  const totalPalletsLoaded = activities.reduce((total, current) => {
+    return total + Number(current.inputPallets);
+  }, 0);
+  const currentTime = Date.now();  // Current time in milliseconds
+  const [sessions, setSessions] = useState([]); // Array to hold all sessions
+  const [showAdjustTime, setShowAdjustTime] = useState(false); // Toggle input visibility
+
   const [isCounting, setIsCounting] = useState(() => {
     return localStorage.getItem("isCounting") === "true";
   });
@@ -37,33 +50,12 @@ function App() {
   const [weightedRate, setWeightedRate] = useState(() => {
     return Number(localStorage.getItem("weightedRate")) || 0;
   })
-  const [isAddingPause, setIsAddingPause] = useState(() => {
-    return (localStorage.getItem("isAddingPause")) === "true";
-  });
-  const [pausedFor, setPausedFor] = useState(() => {
-    return Number(localStorage.getItem("pausedFor")) ||0;
-  });
-  const [remaining, setRemaining] = useState(() => {
-    return Number(localStorage.getItem('remaining')) || 15;
-  });
   const [hasSavedActivity, setHasSavedActivity] = useState(() => {
     return (localStorage.getItem("hasSavedActivity")) === "true";
   })
   const [adjustedTime, setAdjustedTime] = useState(() => {
     return Number(localStorage.getItem('adjustedTime')) || 0;
   });
-
-  //Vars below doesn't need to be persisted
-  const [isDebugging, setIsDebugging] = useState(false);
-  const [trucks, setTrucks] = useState([]);
-  const { t } = useTranslation();
-  const totalPalletsLoaded = activities.reduce((total, current) => {
-    return total + Number(current.inputPallets);
-  }, 0);
-  const currentTime = Date.now();  // Current time in milliseconds
-  const [sessions, setSessions] = useState([]); // Array to hold all sessions
-  const [showAdjustTime, setShowAdjustTime] = useState(false); // Toggle input visibility
-
 
 
   const startOver = () => {
@@ -80,9 +72,6 @@ function App() {
       setInputPallets('');
       setIsCounting(false);
       setStartTimeInput('');
-      setIsAddingPause(false);
-      setPausedFor(0);
-      setRemaining(15);
       setMessage("");
       setHasSavedActivity(false);
       setAdjustedTime(0);
@@ -96,9 +85,6 @@ function App() {
       localStorage.removeItem('weightedRate');
       localStorage.removeItem('startTime');
       localStorage.removeItem('isCounting');
-      localStorage.removeItem('isAddingPause');
-      localStorage.removeItem('remaining');
-      localStorage.removeItem('pausedFor');
       localStorage.removeItem('setMessage');
       localStorage.removeItem('hasSavedActivity');
       localStorage.removeItem('adjustedTime');
@@ -116,9 +102,6 @@ function App() {
     setInputPallets('');
     setIsCounting(false);
     setStartTimeInput('');
-    setIsAddingPause(false);
-    // setPausedFor(0); Pausing is untouched since it's not end of the shift
-    // setRemaining(15);
     // setMessage("");
     setAdjustedTime(0);
 
@@ -129,7 +112,6 @@ function App() {
     localStorage.removeItem('weightedRate');
     localStorage.removeItem('startTime');
     localStorage.removeItem('isCounting');
-    localStorage.removeItem('isAddingPause');
     localStorage.removeItem('adjustedTime');
   };
   // Persist states in localStorage
@@ -154,32 +136,22 @@ function App() {
   }, [isCounting]);
 
   useEffect(() => {
-    localStorage.setItem("isAddingPause", isAddingPause);
-  }, [isAddingPause]);
-
-  useEffect(() => {
     if (startTime !== null) {
       localStorage.setItem("startTime", startTime);
     }
   }, [startTime]);
 
   useEffect(() => {
-    localStorage.setItem("pausedFor", pausedFor);
-  }, [pausedFor]);
-
-  useEffect(() => {
-    localStorage.setItem("remaining", remaining);
-  }, [remaining]);
-
-  useEffect(() => {
-    // Save calculations to localStorage whenever they change
     localStorage.setItem('calculations', JSON.stringify(calculations));
   }, [calculations]);
 
   useEffect(() => {
-    // Save calculations to localStorage whenever they change
     localStorage.setItem('activities', JSON.stringify(activities));
   }, [activities]);
+
+  useEffect(() => {
+    localStorage.setItem('dailyCalculations', JSON.stringify(dailyCalculations));
+  }, [dailyCalculations]);
 
   useEffect(() => {
     localStorage.setItem("hasSavedActivity", hasSavedActivity);
@@ -189,7 +161,7 @@ function App() {
     localStorage.setItem("adjustedTime", adjustedTime);
   }, [adjustedTime]);
 
-  //START OF TODAY's ACTIVITY FUNCTION
+  //START OF SAVE TODAY's ACTIVITY FUNCTION
   const saveActivity = () => {
       // Save the current activity as an object
       const newActivities = {
@@ -210,11 +182,10 @@ function App() {
       // Save the current calculation as an object
       const newCalculation = {
         palletRate: palletRate.toFixed(2),
-        elapsedTime,
         startTime,
-        endTime: Date.now(),
+        endTime: Date.now() + (adjustedTime*60000),
+        elapsedTime,
         totalPallets,
-        pausedFor,
         timestamp: new Date().toLocaleString(), // You can add a timestamp for reference
       };
   
@@ -224,6 +195,24 @@ function App() {
       turnOff();
     }
   };
+
+  const saveDailyCalculation = () => {
+    const isConfirmed = window.confirm("Have you finished loading for today? (adds entry to a score daily history");
+    if(isConfirmed){
+      const newDailyCalculation = {
+        timestamp: new Date().toISOString(), // More consistent date format
+        startTime, //Start time
+        endTime: new Date().toLocaleTimeString(), // Readable end time
+        elapsedTime, // Total time of loading
+        totalPallets, // Total pallets loaded
+        palletRate: palletRate.toFixed(2), // Score
+      };
+  
+      setDailyCalculations(prev => [newDailyCalculation, ...prev]);
+      startOver();
+    }
+  };
+  //END
 
   const clearCalculations = () => {
     const isConfirmed = window.confirm("Are you sure you want to clear all calculations?");
@@ -287,12 +276,6 @@ function App() {
     setIsDebugging(prevState => !prevState); // Toggle debugging state
   };
 
-  const handlePauseReset = () => {
-    setRemaining(15);
-    setMessage("");
-    setPausedFor(0);
-  }
-
   const handleDebugClick = () => {
     console.clear();
     console.log ('============================');
@@ -302,12 +285,9 @@ function App() {
     console.log (elapsedTime + ' elapsedTime');
     console.log (palletRate + ' palletRate');
     console.log (isCounting + ' isCounting');
-    console.log (isAddingPause + ' isAddingPause');
     console.log (startTime + ' startTime');
     console.log(new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' startTime converted');
-    console.log ("Paused for:", pausedFor);
     console.log (Date.now() / 1000);
-    console.log ("Remaining: ", remaining);
     console.log ("IsDebugging?: ", isDebugging);
     console.log ("Weighted score: ", weightedRate);
     calculations.forEach((calc, index) => {
@@ -332,35 +312,6 @@ function App() {
 
 
   // END OF DEBUGGING FUNCTIONS
-
-  // START OF PAUSE FUNCTIONS
-  const handleInputChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (value >= 1 && value <= remaining) {
-      setInputValue(value);
-    } else {
-      setInputValue(""); // Reset if out of range
-    }
-  };
-
-  const handlePauseClick = () => {
-    setIsAddingPause(true); // Show the form
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (inputValue !== "" && inputValue <= remaining) {
-      const chosenNumber = parseInt(inputValue, 10);
-      setPausedFor((prev) => prev + chosenNumber);
-      setRemaining((prev) => prev - chosenNumber);
-      setInputValue(""); // Reset input
-      setIsAddingPause(false); // Hide the form
-      if (pausedFor + chosenNumber === 15) {
-        setMessage("You've used 15 minutes of Your break already.");
-      }
-    }
-  };
-  //END OF PAUSE FUNCTIONS
   
   //START OF ADJUSTING TIME FUNCTIONS
   // Function to toggle the input field visibility
@@ -381,7 +332,7 @@ function App() {
         setElapsedTime(currentElapsedTime); // Set elapsed time
 
         // Calculate pallets per hour
-        const rate = (totalPallets / (currentElapsedTime - (pausedFor * 60))) * 3600;
+        const rate = (totalPallets / (currentElapsedTime)) * 3600;
 
         if (rate > 0) {
           // Check if there are previous calculations for weighted rate
@@ -413,7 +364,7 @@ function App() {
       // Cleanup interval when pausing or stopping
       return () => clearInterval(intervalId);
     }
-  }, [isCounting, startTime, totalPallets, pausedFor, calculations, adjustedTime]);
+  }, [isCounting, startTime, totalPallets, calculations, adjustedTime]);
 
   return (
     <div className="score-counter">
@@ -445,12 +396,14 @@ function App() {
                   </strong>
                 </div>
                 )}
+                {/* Display pallets loaded */}
                 <div className='stat-item'>
                   <span>{t('ScoreCounter.palam')}</span>
                   <strong>
                     <span>{totalPallets} pal</span>
                   </strong>
                 </div>
+                {/* Display elapsed time and adjust time */}
                 <div className='stat-item'>
                   <span>{t('ScoreCounter.eltim')} </span>
                   <strong>
@@ -463,28 +416,27 @@ function App() {
                     />
                   </strong>
                 </div>
-                <div className='stat-item'>
+                <div>
                   {showAdjustTime && (
-                    <label>
-                      {t('ScoreCounter.adjtim')}
-                      <input
-                        type="number"
-                        value={adjustedTime}
-                        onChange={handleAdjustTime}
-                      />
-                    </label>
+                    <div className='stat-item'>
+                      <span style={{fontSize: '1em'}}>
+                        {t('ScoreCounter.adjtim')}
+                      </span>
+                      <span>
+                        <input
+                            className='custom-input'
+                            type="number"
+                            value={adjustedTime}
+                            onChange={handleAdjustTime}
+                            placeholder=''
+                          />
+                      </span>
+                    </div>
                   )}
                 </div>
-                {pausedFor > 0 && (
-                  <div className='stat-item'>
-                  <span>{t('ScoreCounter.elptim')}</span>
-                  <strong>
-                    <span>{Math.floor(pausedFor)} min</span>
-                  </strong>
-                </div>
-                )}
+                {/* Display start loading time */}
                 {startTime != null && (
-                  <div><hr />
+                  <div>
                     <div className='stat-item'>
                       <span>{t('ScoreCounter.starttime')}</span>
                       <strong>
@@ -493,6 +445,8 @@ function App() {
                     </div>
                   </div>
                 )}
+                <hr/>
+                {/* Display 47 score at */}
                 {(palletRate > 47 || weightedRate > 47) && (() => {
                   if (calculations.length > 0) {
                     // Calculate total pallets loaded
@@ -507,11 +461,10 @@ function App() {
                     }, 0);
 
                     // Calculate projected time to reach 47 pallets/hour
-                    const hoursToReach47 = totalPalletsLoaded / 47; // Hours to achieve 47 pallets/hour
-                    const additionalTimeMs = hoursToReach47 * 60 * 60 * 1000; // Convert to milliseconds
-                    const targetTime = new Date(startTime + additionalTimeMs - totalTimeWorked - (adjustedTime * 60 * 1000)); // Adjusted target time
+                    const hoursToReach47 = totalPalletsLoaded / 48;
+                    const additionalTimeMs = hoursToReach47 * 60 * 60 * 1000;
+                    const targetTime = new Date(startTime + additionalTimeMs - totalTimeWorked - (adjustedTime * 60 * 1000));
 
-                    // ✅ Check if targetTime is still in the future
                     if (targetTime > Date.now()) {
                       return (
                         <div className='stat-item'>
@@ -525,10 +478,9 @@ function App() {
                       );
                     }
                   } else if (startTime && totalPalletsLoaded > 0) {
-                    const hoursToReach47 = totalPalletsLoaded / 47; // Calculate hours needed
-                    const targetTime = new Date(startTime + hoursToReach47 * 60 * 60 * 1000 - (adjustedTime * 60 * 1000)); // Add hours in milliseconds
+                    const hoursToReach47 = totalPalletsLoaded / 47;
+                    const targetTime = new Date(startTime + hoursToReach47 * 60 * 60 * 1000 - (adjustedTime * 60 * 1000));
 
-                    // ✅ Check if targetTime is still in the future
                     if (targetTime > Date.now()) {
                       return (
                         <div className='stat-item'>
@@ -542,210 +494,214 @@ function App() {
                       );
                     }
                   }
-                  return null; // Return nothing if conditions are not met
+                  return null;
                 })()}
+                {/* Display add pallet element */}
+                <div className='stat-item'>
+                  <span>{t('ScoreCounter.addpal')}</span>
+                  <span>
+                  <input
+                    className="custom-input"
+                    type="number"
+                    value={inputPallets}
+                    onChange={(e) => {
+                      setInputPallets(e.target.value); // Let user type anything
+                    }}
+                    onBlur={() => {
+                      const num = parseFloat(inputPallets);
+                      const allowedDecimals = [0, 0.25, 0.5, 0.75];
+
+                      if (!isNaN(num)) {
+                        const whole = Math.floor(num);
+                        const decimal = +(num - whole).toFixed(2);
+
+                        if (allowedDecimals.includes(decimal)) {
+                          setInputPallets(num.toString());
+                        } else {
+                          // Optionally round to nearest valid value
+                          const closest = allowedDecimals.reduce((prev, curr) =>
+                            Math.abs(curr - decimal) < Math.abs(prev - decimal) ? curr : prev
+                          );
+                          const corrected = whole + closest;
+                          setInputPallets(corrected.toString());
+                        }
+                      } else {
+                        setInputPallets(''); // Reset if invalid
+                      }
+                    }}
+                    placeholder={t('ScoreCounter.addpal-pholder')}
+                    min="0"
+                    step="0.25"
+                    disabled={!isCounting}
+                  />
+                  </span>
+
+                  {/* <AddIcon 
+                      onClick={addPallets} 
+                      color="black"
+                      size="small"
+                      style={{ cursor: 'pointer', fontSize: '36px' }}
+                      disabled={Number(inputPallets) <= 0}
+                    /> */}
+
+                  <IconButton 
+                    onClick={addPallets} 
+                    color="black" 
+                    size="small" 
+                    style={{ cursor: 'pointer', fontSize: '36px' }}
+                    className="icon-button"
+                    disabled={Number(inputPallets) <= 0}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </div>
+                <hr/>
+                {!isCounting ? (
+                  // OPTIONS BEFORE STARTING COUNTER
+                  <div className="opt-box">
+                    <div className='stat-item'>
+                      <span>{t('ScoreCounter.inittime')}</span>
+                      <span>
+                        <input
+                            className="custom-input"
+                            type="time"
+                            value={startTimeInput}
+                            onChange={(e) => setStartTimeInput(e.target.value)}
+                            disabled={isCounting}
+                            lang="pl-PL"
+                            placeholder="HH:MM"
+                        />
+                      </span>
+                    </div>
+                    <div className="sc-button-container">
+                      <button onClick={startCounting} disabled={startTimeInput === ''}>
+                        {hasSavedActivity
+                          ? t('ScoreCounter.buttons.continuect')
+                          : t('ScoreCounter.buttons.startct')}
+                      </button>
+                      {hasSavedActivity && (
+                        <div>
+                          <button onClick={saveDailyCalculation}>
+                          {t('ScoreCounter.buttons.startovr')}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                      {/* <button className="debug" onClick={toggleDebugging}>
+                        {isDebugging ? "Disable Debugging" : "Enable Debugging"}
+                      </button>
+                    {isDebugging && (
+                      <div>
+                        <button className="debug" onClick={startOver}>DEBUG-RESET</button>
+                        <button className="debug" onClick={handleDebugClick}>
+                          Console.log DEBUG
+                        </button>
+                        <button className="debug" onClick={handleSessionCheck}>Session Check</button>
+                        <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
+                        <button className="debug" onClick={() => setPalletRate(0)}>Clear Rate</button>
+                      </div>
+                    )} */}
+                  </div>
+                ) : (
+                  // After starting, show additional options
+                  <div className="opt-box">
+                    <div className="sc-button-container">
+                      <button onClick={saveCalculation}>{t("ScoreCounter.buttons.turnoff")}</button>
+                      <button onClick={saveDailyCalculation}>
+                        {t('ScoreCounter.buttons.startovr')}
+                      </button>
+                    </div>
+                    {/* DEBUG BUTTON
+                    <button className="debug" onClick={toggleDebugging}>
+                      {isDebugging ? "Disable Debugging" : "Enable Debugging"}
+                    </button>
+                    {isDebugging && (
+                      <div>
+                        <button className="debug" onClick={handleDebugClick}>
+                          Console.log DEBUG
+                        </button>
+                        <button className="debug" onClick={handleSessionCheck}>Session Check</button>
+                        <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
+                      </div>
+                    )} */}
+                  </div>
+                )}
               </div>
             </div>
         )}
         {activeTab === 2 && (
           <div>
-            {/* Display the array of every truck loaded with amount of pallets and timestamp */}
-              <ul className='statistics'>
-                {activities.map((a, index) => (
+            <ul className='statistics'>
+              {activities.length > 0 ? (
+                activities.map((a, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
                     <strong><p>{t('ScoreCounter.truck')} #{a.truckNumber} - {new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></strong>
                     <p>{t('ScoreCounter.palam')} {a.inputPallets}</p>
                     <hr/>
                   </li>
-                ))}
-              </ul>
+                ))
+              ) : (
+                <h2 style={{color: 'black'}}>No records found.</h2>
+              )}
+            </ul>
           </div>
         )}
         {activeTab === 3 && (
           <div>
-            {/* Display the saved score after finishing calculations */}
-              <ul className='statistics'>
-                {calculations.map((calc, index) => (
+            <ul className='statistics'>
+              {calculations.length > 0 ? (
+                calculations.map((calc, index) => (
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
                     <strong>{t('ScoreCounter.tab-3')} #{index + 1}</strong><br />
                     {t('ScoreCounter.palperh')}{calc.palletRate} pallets/hour<br />
                     Started loading at: {new Date(calc.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}<br />
-                    Turned off at: {new Date(calc.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />
+                    Turned off at: {new Date(calc.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />
                     {t('ScoreCounter.eltim')} {formatElapsedTime(calc.elapsedTime)}<br />
                     {t('ScoreCounter.palam')} {calc.totalPallets}<br />
-                    {t('ScoreCounter.elptim')} {calc.pausedFor} minutes
                     <hr/>
                   </li>
-                ))}
-              </ul>
+                ))
+              ) : (
+                <h2 style={{color: 'black'}}>No records found.</h2>
+              )}
+            </ul>
           </div>
         )}
       </div>
+      
 
+
+      {/*HOW-TO SECTION*/}
       {!isCounting ? (
-        // Input for the start time
-        <div className="opt-box">
-          <label className="input-desc">
-            {t('ScoreCounter.inittime')}
-              <input
-                className="custom-input"
-                type="time"
-                value={startTimeInput}
-                onChange={(e) => setStartTimeInput(e.target.value)}
-                disabled={isCounting}
-                lang="pl-PL"
-                placeholder="HH:MM"
-              />
-          </label>
-          <br/><br/>
-          <button onClick={startCounting} disabled={startTimeInput === ''}>
-            {hasSavedActivity
-              ? t('ScoreCounter.buttons.continuect')
-              : t('ScoreCounter.buttons.startct')}
-          </button>
-          {hasSavedActivity && (
-            <div>
-              <button onClick={startOver}>
-              {t('ScoreCounter.buttons.startovr')}
-              </button>
-            </div>
-          )}
-          <button className="debug" onClick={toggleDebugging}>
-            {isDebugging ? "Disable Debugging" : "Enable Debugging"}
-          </button>
-          {isDebugging && (
-            <div>
-              <button className="debug" onClick={startOver}>DEBUG-RESET</button>
-              <button className="debug" onClick={handleDebugClick}>
-                Console.log DEBUG
-              </button>
-              <button className="debug" onClick={handleSessionCheck}>Session Check</button>
-              <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
-              <button className="debug" onClick={() => setPalletRate(0)}>Clear Rate</button>
-            </div>
-          )}
+        <div>
+          <hr className='red'/><br/>
+          <h2>{t('ScoreCounter.howto')}</h2>
+          <p>
+            <br/><br/>
+            <span className="highlight">{t('ScoreCounter.startat-label')} </span>{t('ScoreCounter.startat-dsc')}
+            <br/><br/>
+          </p>
+          <br/><hr className='red'/>
         </div>
       ) : (
-        // After starting, show additional options
-        <div className="opt-box">
-          {/* <TextField
-            label="Enter value"
-            variant="filled"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            style={{ marginBottom: '20px' }} // Inline styles
-            InputProps={{
-              style: { color: 'black', backgroundColor: 'white' }, // Customize the input text
-            }}
-            InputLabelProps={{
-              style: { color: 'gray' }, // Customize the label text
-            }}
-            fullWidth
-          /> */}
-          <label className='input-desc'>
-            {t('ScoreCounter.addpal')}
-            <br/>
-            <input
-              className="custom-input"
-              type="number"
-              value={inputPallets}
-              onChange={(e) => setInputPallets(e.target.value)}
-              placeholder={t('ScoreCounter.addpal-pholder')}
-            />
-          </label>
+        // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
+        <div>
+          <hr className='red'/><br/>
+          <h2>{t('ScoreCounter.howto')}</h2>
           <br/>
-          <button onClick={addPallets}>
-          {t('ScoreCounter.buttons.updtscr')}
-          </button>
-          {/* ADD PAUSE BUTTON */}
-          {message ? (
-            <p>{message}</p>
-          ) : (
-            <>
-              {!isAddingPause && isCounting && remaining > 0 && (
-                <button 
-                  onClick={handlePauseClick} 
-                  disabled={elapsedTime < 15 * 60} // Disable if elapsed time is less than 15 minutes
-                >
-                  {t("ScoreCounter.buttons.addpause")}
-                </button>                  
-              )}
-                  {isAddingPause && (
-                    <form onSubmit={handleSubmit}>
-                      <label>
-                        Choose a number (1-{remaining}):
-                        <input
-                          type="number"
-                          min="1"
-                          max={remaining}
-                          value={inputValue}
-                          onChange={handleInputChange}
-                          disabled={remaining === 0}
-                        />
-                      </label>
-                      <button type="submit" disabled={remaining === 0}>
-                        Submit
-                      </button>
-                    </form>
-                  )}
-            </>
-          )}
-          <button onClick={saveCalculation}>{t("ScoreCounter.buttons.turnoff")}</button>
-          <button onClick={startOver}>
-            {t('ScoreCounter.buttons.startovr')}
-          </button>
-          {/* DEBUG BUTTON */}
-          <button className="debug" onClick={toggleDebugging}>
-            {isDebugging ? "Disable Debugging" : "Enable Debugging"}
-          </button>
-          {isDebugging && (
-            <div>
-              <button className="debug" onClick={handleDebugClick}>
-                Console.log DEBUG
-              </button>
-              <button className="debug" onClick={handleSessionCheck}>Session Check</button>
-              <button className="debug" onClick={handlePauseReset}>
-                Reset Pause
-              </button>
-              <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
-            </div>
-          )}
+          <p>
+              <span className="highlight">{t('ScoreCounter.addpall-label')}</span>{t('ScoreCounter.addpall-dsc')}
+              <br/><br/>
+              <span className="highlight">{t('ScoreCounter.turnoff-label')}</span>{t('ScoreCounter.turnoff-dsc')}
+              <br/><br/>
+              <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
+              <br/><br/>
+          </p>
+          <br/><hr className='red'/>
         </div>
       )}
-
-        {/*HOW-TO SECTION*/}
-        {!isCounting ? (
-          <div>
-            <hr className='red'/><br/>
-            <h2>{t('ScoreCounter.howto')}</h2>
-            <p>
-              <br/><br/>
-              <span className="highlight">{t('ScoreCounter.startat-label')} </span>{t('ScoreCounter.startat-dsc')}
-              <br/><br/>
-            </p>
-            <br/><hr className='red'/>
-          </div>
-        ) : (
-          // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
-          <div>
-            <hr className='red'/><br/>
-            <h2>{t('ScoreCounter.howto')}</h2>
-            <br/>
-            <p>
-                <span className="highlight">{t('ScoreCounter.addpall-label')}</span>{t('ScoreCounter.addpall-dsc')}
-                <br/><br/>
-                <span className="highlight">{t('ScoreCounter.pause-label')}</span>{t('ScoreCounter.pause-dsc')}
-                <br/><br/>
-                <span className="highlight">{t('ScoreCounter.turnoff-label')}</span>{t('ScoreCounter.turnoff-dsc')}
-                <br/><br/>
-                <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
-                <br/><br/>
-            </p>
-            <br/><hr className='red'/>
-          </div>
-        )}
     </div>
   );
 }
 
-export default App;
+export default ScoreCounter;

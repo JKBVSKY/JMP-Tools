@@ -6,8 +6,8 @@
 
 html, body {
   /* height: 100%;  not needed? */ 
-  width: 95%;
-  max-width: 1000px;
+
+  max-width: 700px;
   margin: 0 auto; /* Resets any unwanted browser margins */
   padding: 0; /* Resets padding */
   box-sizing: border-box; /* Ensures consistent sizing */
@@ -72,9 +72,14 @@ hr.red-short {
   position: relative;
 }
 
-.language-switcher button {
-  margin: 15px auto;
-  display: inline-block;
+.ls-buttons-container {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+}
+
+.ls-buttons-container button {
+  font-size: 24px;
 }
 
 button {
@@ -84,7 +89,6 @@ button {
   cursor: pointer; /* Indicate it’s clickable */
   border: none;
   border-radius: 8px;
-  font-size: 50px;
   line-height: 1;
   color:#4d4d4d;
   background-color: #c9c9c9;
@@ -109,7 +113,6 @@ button:not(:hover) {
   box-shadow: 0 0 0px rgba(255, 0, 0, 0); /* Reset shadow when not hovered */
 }
 
-/* Disabled button styling */
 button:disabled {
   cursor: not-allowed; /* Show a not-allowed cursor */
   background-color: #666; /* Different background color */
@@ -118,7 +121,6 @@ button:disabled {
   transform: none;
 }
 
-/* Prevent hover effects when the button is disabled */
 button:disabled:hover {
   background-color: #666; /* Same as default disabled state */
 }
@@ -137,10 +139,32 @@ button.debug:hover {
   box-shadow: 0 0 10px 5px #630c0c; /* Box shadow when hovered */
 }
 
+
+.opt-box {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+.sc-button-container {
+  display: flex;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.sc-button-container button {
+  color: rgb(228, 228, 228);
+  background-color: #630c0c;
+  font-size: 1.5em;
+  flex: 1; /* Each button will take equal space */
+  min-width: 80px; /* Prevents buttons from getting too small */
+}
+
+
 input {
   font-family: Arial, Helvetica, sans-serif;
   color: black;
-  max-width: 500px;
   height: 70px;
   padding: 0px 20px 0px 20px;
   margin: 8px 0;
@@ -168,18 +192,16 @@ input:focus::placeholder {
 input[type="number"] {
   text-align: center;
   font-size: 24px;  /* Smaller placeholder font size */
-  line-height: 40px;
   font-style: italic;
 }
 
 input[type="time"] {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 40px;   /* Match the font size */
+  font-size: 24px;   /* Match the font size */
   }
 
 label.input-desc {
   pointer-events: none;
-  display: block;
   align-items: center;
   justify-content: center;
   font-size: 52px;
@@ -187,12 +209,12 @@ label.input-desc {
 
 input.custom-input {
   width: 100%;
+  height: 36px;
   margin: 0 auto;
-  display: block;
-}
-
-.language-switcher {
-  margin-top: 45px;
+  padding: 0;
+  border: 1px solid #ccc; /* Ensure border is not adding extra height */
+  line-height: normal; /* Avoid inherited line-height issues */
+  box-sizing: border-box;
 }
 
 h1.calc-title {
@@ -200,7 +222,6 @@ h1.calc-title {
   font-family: 'Courier New', Courier, monospace;
   font-weight: 100;
 }
-
 
 
 .navbar {
@@ -237,7 +258,7 @@ h1.calc-title {
 
 .nav-links {
   display: none; /* Hidden by default */
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
   margin-top: 10px;
@@ -270,8 +291,15 @@ h1.calc-title {
   display: none;
 }
 
+.lang-button {
+  margin: 0 auto;
+  text-decoration: none;
+  font-size: 16px;
+}
+
 .score-counter {
   margin: 0 auto;
+  padding: 20px;
 }
 
 .statistics {
@@ -293,6 +321,8 @@ h1.calc-title {
   /* font-family: 'Fira Sans', sans-serif; Matches your button font */
   font-size: 24px;
   line-height: 1.5;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .stat-item strong span {
@@ -309,7 +339,8 @@ h1.calc-title {
 }
 
 .tabs button {
-  flex: 1 1 auto;
+  flex: 1;  /* Distributes equal space to all buttons */
+  min-width: 0;  /* Prevents text from affecting button width */
   font-size: 1rem;
   margin-bottom: 0;
   padding: 10px;
@@ -345,22 +376,67 @@ h1.calc-title {
 }
 
 
-.tab-content {
-  /* padding: 0rem; */
-  /* border: 1px solid #ddd; */
-  /* border-radius: 5px; */
+/* STYLES FOR TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  background-color: black;
+  color: white;
+  font-family: "Fira Sans", sans-serif;
+}
+
+th, td {
+  border: 1px solid gray;
+  padding: 8px;
+  line-height: 1; /* Reduce extra spacing inside the text */
+  height: auto; /* Prevent fixed row height */
+  vertical-align: middle;
+  font-size: 1em;
+}
+
+th {
+  background-color: #111;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+tr:nth-child(even) {
+  background-color: #222; /* Slightly different shade for alternating rows */
+}
+
+tr:hover {
+  background-color: #333; /* Highlight row on hover */
+}
+
+
+.reset-button { 
+  background-color: #444;
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 2px solid gray;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.reset-button:hover {
+  background-color: #666;
+  border-color: white;
 }
 
 /* Responsive styles for smaller screens */
 @media only screen and (max-width: 600px) {
   body {
+    width: 90%;
     font-size: 14px;
-    padding: 10px;  /* Add padding for mobile */
+    padding: 20px;  /* Add padding for mobile */
   }
 
   h1.calc-title {
     margin: 0 auto;
-    font-size: 1.9em;  /* Smaller title for mobile */
+    font-size: 1.3em;  /* Smaller title for mobile */
   }
 
   hr.ct {
@@ -372,8 +448,9 @@ h1.calc-title {
   }
 
   input[type="number"]::placeholder {
-    font-size: 24px;  /* Smaller placeholder font size */
-    line-height: 40px;
+    font-size: 16px;  /* Smaller placeholder font size */
+    vertical-align: middle;
+    width: 100%;
   }
 
   input[type="time"] {
@@ -381,14 +458,14 @@ h1.calc-title {
   }
 
   label.input-desc {
-    font-size: 1.9em;  /* Smaller label font for mobile */
+    font-size: 1.3em;  /* Smaller label font for mobile */
     flex-direction: column;  /* Stack label and input vertically */
     align-items: center;
   }
 
   button {
     width: 100%;  /* Full width buttons on mobile */
-    font-size: 2em;  /* Smaller button font */
+    font-size: 1em;  /* Smaller button font */
     line-height: 1;
   }
 
@@ -397,7 +474,6 @@ h1.calc-title {
   }
 
   .opt-box button {
-    width: 200px;
     padding: 10px 15px; /* Adjust spacing */
     margin: 10px auto; /* Consistent spacing between buttons */
     font-size: 1rem;
@@ -412,25 +488,34 @@ h1.calc-title {
     margin: 0;
     padding: 0;
     box-sizing: border-box; /* Include padding and border in width calculation */
-    margin-top: 40px;  /* Adjust spacing for mobile */
   }
 
-  input.custom-input {
-    width: 100%;
-    margin: 0; /* Remove any horizontal margin */
-    display: block; /* Keep block display */
+  .custom-input {
+    width: 80px; /* Set a reasonable width for the input */
+    min-width: 50px; /* Prevent it from shrinking too much */
   }
   
+  .icon-button {
+    flex-shrink: 0; /* Prevents the icon button from growing too large */
+  }
+
+  /* .input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  } */
+  
   .navbar {
+    margin: 0 auto;
+    width: 100%;
     padding: 10px; /* Adjust padding for smaller screens */
   }
 
   .navbar .logo {
-    font-size: 1.6em; /* Reduce logo size */
+    font-size: 3em; /* Reduce logo size */
   }
 
   .navbar .nav-links {
-    flex-direction: column; /* Stack links vertically on small screens */
     gap: 8px;
   }
 
@@ -445,7 +530,10 @@ h1.calc-title {
   }
 
   .stat-item {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center; /* Keeps elements aligned */
+    gap: 10px; /* Adds space between elements */
   }
 
   .tabs {
@@ -461,4 +549,19 @@ h1.calc-title {
   .tab-content {
     margin: 0 auto;
   }
+
+  .icon-button {
+    flex-shrink: 0; /* Prevents the button from growing */
+    width: 24px; /* Ensures the icon button stays the correct size */
+    height: 24px; /* Keeps it square */
+  }  
+
+  th, td {
+    font-size: 10px;
+  }
+  
+  th {
+    font-size: 10px;
+  }
+
 }

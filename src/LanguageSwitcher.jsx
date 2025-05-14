@@ -10,10 +10,12 @@ const LanguageSwitcher = ({ onCloseMenu }) => {
   };
 
   return (
-    <div className="language-switcher gradient-bg">
+    <div className="language-switcher">
         <h1>{t('LanguageSwitcher.info', 'Default text')}</h1>
-        <button onClick={() => changeLanguage('en')}>{t('LanguageSwitcher.en')}</button>
-        <button onClick={() => changeLanguage('pl')}>{t('LanguageSwitcher.pl')}</button>
+        <div className="ls-buttons-container">
+          <button onClick={() => changeLanguage('en')}>{t('LanguageSwitcher.en')}</button>
+          <button onClick={() => changeLanguage('pl')}>{t('LanguageSwitcher.pl')}</button>
+        </div>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const HomePage = () => {
     const [changelog, setChangelog] = useState("");
 
   useEffect(() => {
-    fetch("changelog.md")
+    fetch("assets/changelog.md")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch changelog");

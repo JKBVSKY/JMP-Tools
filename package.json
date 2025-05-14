@@ -1,7 +1,7 @@
 {
   "name": "jmp-tools",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "homepage": "/JMP-Tools/",
   "scripts": {
@@ -26,6 +26,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.2.0",
     "react-markdown": "^9.0.3",
+    "react-router-dom": "^7.4.1",
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
