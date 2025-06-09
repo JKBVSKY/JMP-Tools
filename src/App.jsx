@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import Navigation from "./Navigation";
 import HomePage from "./HomePage";
 import ScoreCounter from "./ScoreCounter";
@@ -17,6 +18,20 @@ function App() {
           return []; // Return empty array if parsing fails
         }
       });
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [updateAvailable, setUpdateAvailable] = useState(false);
+    const {
+      needRefresh,
+      updateServiceWorker,
+    } = useRegisterSW({
+      onRegisteredSW(swUrl, r) {
+        console.log('Service Worker registered:', swUrl);
+      },
+      onNeedRefresh() {
+        setUpdateAvailable(true);
+      },
+    });
+  
 
     useEffect(() => {
         const savedCalculations = localStorage.getItem("dailyCalculations");
@@ -29,8 +44,6 @@ function App() {
         }
         }
     }, []);
-
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
 
     useEffect(() => {
       window.addEventListener('beforeinstallprompt', (e) => {
@@ -73,11 +86,29 @@ function App() {
                 }
               />
             </Routes>
-              {deferredPrompt && (
-                <button onClick={handleInstallClick}>
-                  Install App
+            {updateAvailable && (
+              <div style={{
+                background: '#333',
+                color: 'white',
+                padding: '1rem',
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                textAlign: 'center',
+                zIndex: 9999
+              }}>
+                🔄 A new version is available.{' '}
+                <button onClick={() => updateServiceWorker(true)}>
+                  Update Now
                 </button>
-              )}
+              </div>
+            )}
+            {deferredPrompt && (
+              <button onClick={handleInstallClick}>
+                Install App
+              </button>
+            )}
             <Footer />
           </div>
         </Router>
