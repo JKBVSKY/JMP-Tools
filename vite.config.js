@@ -27,6 +27,14 @@ export default defineConfig({
             type: 'image/png',
           },
         ],
+        screenshots: [
+          {
+            src: 'screenshots/screenshot1.png',
+            sizes: '355x473',
+            type: 'image/png',
+            form_factor: 'narrow' // or "wide" for landscape
+          }
+        ]
       },
     }),
   ],
