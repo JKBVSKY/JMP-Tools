@@ -17,15 +17,15 @@ const Navigation = () => {
   return (
     <div>
       <nav className="navbar">
-        <Link to="JMP-Tools/" onClick={() => setIsMenuVisible(false)} className="logo">
-          JMP-TOOLS [0.3.0]
+        <Link to="/" onClick={() => setIsMenuVisible(false)} className="logo">
+          JMP-TOOLS [0.3.1]
         </Link>
         <hr className="red-short" />
 
         <div className={`nav-links show"`}>
-          <Link to="JMP-Tools/" onClick={() => setIsMenuVisible(false)}>Home</Link>
-          <Link to="JMP-Tools/calculator" onClick={() => setIsMenuVisible(false)}>Calculator App</Link>
-          <Link to="JMP-Tools/scorehistory" onClick={() => setIsMenuVisible(false)}>Score History</Link>
+          <Link to="/" onClick={() => setIsMenuVisible(false)}>Home</Link>
+          <Link to="/calculator" onClick={() => setIsMenuVisible(false)}>Calculator App</Link>
+          <Link to="/scorehistory" onClick={() => setIsMenuVisible(false)}>Score History</Link>
           <button onClick={handleLanguageButton} className="lang-button">Language</button>
         </div>
 

@@ -66,9 +66,9 @@ function App() {
           <div>
             <Navigation />
             <Routes>
-              <Route path="JMP-Tools/" element={<HomePage />} />
+              <Route path="/" element={<HomePage />} />
               <Route
-                path="JMP-Tools/calculator"
+                path="/calculator"
                 element={
                   <ScoreCounter
                     dailyCalculations={dailyCalculations}
@@ -77,7 +77,7 @@ function App() {
                 }
               />
               <Route
-                path="JMP-Tools/scorehistory"
+                path="/scorehistory"
                 element={
                   <ScoreHistory
                     dailyCalculations={dailyCalculations}

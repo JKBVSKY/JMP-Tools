@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.3.0",
   "type": "module",
-  "homepage": "/JMP-Tools/",
+  "homepage": "/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
