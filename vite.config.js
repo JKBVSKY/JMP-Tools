@@ -11,7 +11,8 @@ export default defineConfig({
       manifest: {
         name: 'JMP Tools',
         short_name: 'JMPTools',
-        start_url: '/',
+        start_url: './',
+        scope: './',
         display: 'standalone',
         background_color: '#000000',
         theme_color: '#ffffff',

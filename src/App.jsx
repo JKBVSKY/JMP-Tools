@@ -29,6 +29,25 @@ function App() {
         }
         }
     }, []);
+
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+    useEffect(() => {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+      });
+    }, []);
+  
+    const handleInstallClick = async () => {
+      if (deferredPrompt) {
+        await deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        console.log('Install choice:', choice.outcome);
+        setDeferredPrompt(null);
+      }
+    };
+
     return (
         <Router>
           <div>
@@ -54,6 +73,11 @@ function App() {
                 }
               />
             </Routes>
+              {deferredPrompt && (
+                <button onClick={handleInstallClick}>
+                  Install App
+                </button>
+              )}
             <Footer />
           </div>
         </Router>
