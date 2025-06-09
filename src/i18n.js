@@ -12,10 +12,8 @@ i18n
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
     backend: {
-      loadPath: process.env.NODE_ENV === 'production'
-        ? '/JMP-Tools/locales/{{lng}}/translation.json' // For gh-pages
-        : 'locales/{{lng}}/translation.json', // For local development
-    },
+      loadPath: '/locales/{{lng}}/translation.json',
+    },    
     detection: {
       order: ['path', 'cookie', 'localStorage', 'navigator'],
       caches: ['cookie'],
