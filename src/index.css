@@ -385,6 +385,7 @@ input.custom-input {
   line-height: 1.5;
   flex-wrap: nowrap;
   white-space: nowrap;
+  padding: 0px 8px;
 }
 
 .stat-item strong span {
@@ -985,7 +986,7 @@ body.dark-mode::before {
   }  
 
   th, td {
-    font-size: 14px;
+    font-size: 10px;
   }
   
   th {
@@ -1009,6 +1010,11 @@ body.dark-mode::before {
   .score-history {
     padding: 4px;
     margin: 0 auto;
+  }
+
+  .settings-box {
+    width: 90%;
+    padding: 12px;
   }
 
   h1.calc-title {
