@@ -11,7 +11,7 @@
   .changelog-container h2,
   .changelog-container h3 {
     text-align: center;
-    color: #ffffff;
+    color: #444;
     font-family: 'Roboto', sans-serif;
   }
   
@@ -27,7 +27,7 @@
   
   .changelog-container p {
     line-height: 1.6;
-    color: #ffffff;
+    color: #444;
     font-size: 1em;
     margin-bottom: 15px;
   }
@@ -51,7 +51,6 @@
   
   /* Add some styling for code blocks and inline code */
   .changelog-container pre {
-    background-color: #f5f5f5;
     padding: 15px;
     border-radius: 5px;
     overflow-x: auto;
@@ -60,7 +59,6 @@
   
   .changelog-container code {
     font-size: 1.2em;
-    background-color: #f0f0f0;
     padding: 3px 6px;
     border-radius: 5px;
   }
@@ -77,10 +75,6 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-  }
-  
-  .changelog-container th {
-    background-color: #f4f4f4;
   }
   
   /* For task lists */

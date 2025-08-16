@@ -7,22 +7,15 @@ import './HomePage.css';  // Import your custom CSS file for styling
 
 
 const HomePage = () => {
-    const { t } = useTranslation();
+    const { i18n } = useTranslation();
     const [changelog, setChangelog] = useState("");
 
   useEffect(() => {
-    fetch(import.meta.env.BASE_URL + "changelog.md")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch changelog");
-        }
-        return response.text();
-      })
-      .then((text) => {
-        setChangelog(text);
-      })
-      .catch((error) => console.error("Error fetching changelog:", error));
-  }, []);
+    const lang = i18n.language === "pl" ? "pl" : "en";
+    fetch(`/changelog_${lang}.md`)
+      .then((res) => res.text())
+      .then(setChangelog);
+  }, [i18n.language]);
 
   return (
     <div className="changelog-container">

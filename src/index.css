@@ -7,7 +7,6 @@
 html, body {
   /* height: 100%;  not needed? */ 
 
-  max-width: 700px;
   margin: 0 auto; /* Resets any unwanted browser margins */
   padding: 0; /* Resets padding */
   box-sizing: border-box; /* Ensures consistent sizing */
@@ -20,20 +19,21 @@ html, body {
   box-sizing: inherit;
 }
 
+body, button, input, select, textarea, table, h1, h2, h3, p {
+  font-family: 'Fira Sans', 'Montserrat', 'Poppins', 'Arial', sans-serif;
+}
+
 body {
   display: flex;
   flex-direction: column; /* Stack content vertically */
   justify-content: flex-start; /* Align content to the top */
   align-items: center;     /* Center vertically */
-  font-family: 'Courier New', Courier, monospace;
   text-align: center;
   color: rgb(255, 255, 255);
-  background-color: rgb(0, 0, 0);
-  border: 6px outset #b3000080;
 }
 
 body::before {
-  content: ''; /* Create a pseudo-element to rotate background */
+  content: '';
   position: fixed;
   top: 50%;
   left: 50%;
@@ -41,46 +41,14 @@ body::before {
   height: 121%;
   background-image: url('/assets/biedronka_jmp.svg');
   background-repeat: repeat;
-  background-size: 250px 250px; /* size of the image*/
-  transform:translate(-50%,-50%) rotate(-10deg); /* center the element then rotate */
-  z-index: -1; /* Ensure it stays behind the content */
+  background-size: 250px 250px; 
+  background-color: white;
+  transform:translate(-50%,-50%) rotate(0deg);
+  z-index: -1; 
   opacity: 0.2;
 }
 
-.highlight, h1.red-text, label.input-desc{
-  color: rgb(235, 0, 0);
-}
-
-h1, p.red-text {
-  color: rgb(255, 255, 255);
-}
-
-hr.red {
-  border: 0;
-  height: 2px;
-  background: linear-gradient(to right, black, #b30000, #000000);
-  margin: 20px 20px;
-  position: relative;
-}
-
-hr.red-short {
-  border: 0;
-  height: 2px;
-  background: linear-gradient(to right, black, #b30000, #000000);
-  width: 50%;
-  margin: 0 auto;
-  position: relative;
-}
-
-.ls-buttons-container {
-  display: flex;
-  flex: 1;
-  gap: 10px;
-}
-
-.ls-buttons-container button {
-  font-size: 24px;
-}
+/* === BUTTONS === */
 
 button {
   padding: 0.3em;
@@ -90,23 +58,13 @@ button {
   border: none;
   border-radius: 8px;
   line-height: 1;
-  color:#4d4d4d;
   background-color: #c9c9c9;
   transition: background-color 0.2s ease, box-shadow 0.1s ease-in-out, color 0.2s ease; /* Smooth hover effect */
   text-transform: uppercase;
-  font-family: 'Fira Sans', sans-serif;
-  display: block;
-}
-
-button:active {
-  background-color: #d0d0d0; /* Darker color when pressed */
-  transform: translateY(1px); /* Slight movement to enhance pressing effect */
-}
-
-button:hover {
-  color: black;
-  background-color: #ebebeb; /* Slightly lighter color */
-  box-shadow: 0 0 10px 5px #5f5f5f; /* Box shadow when hovered */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 button:not(:hover) {
@@ -139,14 +97,6 @@ button.debug:hover {
   box-shadow: 0 0 10px 5px #630c0c; /* Box shadow when hovered */
 }
 
-
-.opt-box {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0;
-  box-sizing: border-box; /* Include padding and border in width calculation */
-}
-
 .sc-button-container {
   display: flex;
   margin: 0 auto;
@@ -154,188 +104,20 @@ button.debug:hover {
 }
 
 .sc-button-container button {
-  color: rgb(228, 228, 228);
-  background-color: #630c0c;
+  color: #fff;
   font-size: 1.5em;
   flex: 1; /* Each button will take equal space */
   min-width: 80px; /* Prevents buttons from getting too small */
 }
 
-
-input {
-  font-family: Arial, Helvetica, sans-serif;
-  color: black;
-  height: 70px;
-  padding: 0px 20px 0px 20px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-sizing: border-box;
-  text-align: center;
-  font-weight: 100;
-  line-height: 70px;
-  font-size: 64px;
-  transition: all 0.3s ease;
-  pointer-events: all;
-  }
-
-input:focus {
-  border-color: #b30000; /* Change border color */
-  outline: none;
-  box-shadow: 0 0 10px #b30000; /* Add a subtle glow effect */
-  }
-
-input:focus::placeholder {
-  opacity: 0;
-}
-
-input[type="number"] {
-  text-align: center;
-  font-size: 24px;  /* Smaller placeholder font size */
-  font-style: italic;
-}
-
-input[type="time"] {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 24px;   /* Match the font size */
-  }
-
-label.input-desc {
-  pointer-events: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 52px;
-}
-
-input.custom-input {
-  width: 100%;
-  height: 36px;
-  margin: 0 auto;
-  padding: 0;
-  border: 1px solid #ccc; /* Ensure border is not adding extra height */
-  line-height: normal; /* Avoid inherited line-height issues */
-  box-sizing: border-box;
-}
-
-h1.calc-title {
-  font-size: 42px;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: 100;
-}
-
-
-.navbar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #000000;
-  padding: 10px 20px;
-}
-
-.navbar > a{
-  display: block;
-  padding: 40px;
-}
-
-.navbar .logo {
-  color: rgb(209, 203, 203);
-  text-decoration: none;
-  font-size: 3em;
-  padding: 10px 0 0 0;
-  margin: 0px 20px 20px 20px;
-  font-weight: 600;
-  font-family: 'Fira Sans', sans-serif;
-}
-
-.menu-toggle {
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 1.5em;
-  cursor: pointer;
-}
-
-.nav-links {
-  display: none; /* Hidden by default */
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.navbar .nav-links {
-  display: flex;
-  gap: 10px;
-}
-
-.navbar .nav-links a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin: 0 auto;
-}
-
-.navbar .nav-links a:hover {
-  background-color: #b30000;
-}
-
-.nav-links.show {
-  display: flex; /* Show links when the menu is open */
-}
-
-.nav-links.hide {
-  display: none;
-}
-
-.lang-button {
-  margin: 0 auto;
-  text-decoration: none;
-  font-size: 16px;
-}
-
-.score-counter {
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.statistics {
-  width: 90%;
-  margin: 0 auto; /* Center the statistics box */
-  padding: 10px;
-  border-radius: 0px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: #ffffffd3; /* Optional, for better visibility */
-}
-
-.stat-item {
-  color: rgb(41, 41, 41);
-  display: flex;
-  justify-content: space-between;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  /* font-family: 'Fira Sans', sans-serif; Matches your button font */
+.ls-buttons-container button {
   font-size: 24px;
-  line-height: 1.5;
-  flex-wrap: nowrap;
-  white-space: nowrap;
 }
 
-.stat-item strong span {
-  color: rgb(197, 64, 64);
-  font-size: 1.1em;
-  line-height: 1;
-}
-
-.tabs {
-  width: 90%;
+.ls-buttons-container {
   display: flex;
-  margin: 0 auto;
-  gap: 0px;
+  flex: 1;
+  gap: 10px;
 }
 
 .tabs button {
@@ -375,8 +157,248 @@ h1.calc-title {
   box-shadow: none;
 }
 
+.reset-button { 
+  background-color: #444;
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 2px solid gray;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.reset-button:hover {
+  background-color: #666;
+  border-color: white;
+}
+
+/* === HEADERS AND OTHER === */
+
+.highlight, h1.red-text, label.input-desc{
+  color: rgb(235, 0, 0);
+}
+
+h1, p.red-text {
+  color: rgb(255, 255, 255);
+}
+
+h1.calc-title {
+  width: 90%;
+  margin: 0 auto;
+  font-weight: 500;
+  font-size: 2.5em;
+  line-height: 1.2;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+hr {
+  width: 100%;
+  display: block;
+  border: none;
+  margin: 16px 0;
+}
+
+.how-to-use-container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.how-to-use-container p {
+  text-align: left;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+/* === INPUTS === */
+
+input {
+  font-family: Arial, Helvetica, sans-serif;
+  color: black;
+  height: 70px;
+  padding: 0px 20px 0px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  pointer-events: all;
+  }
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #b30000; /* Add a subtle glow effect */
+  }
+
+input:focus::placeholder {
+  opacity: 0;
+}
+
+input[type="number"] {
+  text-align: center;
+  font-size: 24px;  /* Smaller placeholder font size */
+  font-style: italic;
+}
+
+input[type="time"] {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;   /* Match the font size */
+  }
+
+label.input-desc {
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+input.custom-input {
+  width: 100%;
+  height: 36px;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid #ccc; /* Ensure border is not adding extra height */
+  line-height: normal; /* Avoid inherited line-height issues */
+  box-sizing: border-box;
+}
+
+/* === NAVBAR === */
+
+.navbar {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-left: 1.5px solid #DCDCDC;
+  border-right: 1.5px solid #DCDCDC;
+  border-bottom: 1.5px solid #DCDCDC;
+  border-radius: 0 0 12px 12px ;
+}
+
+.navbar > a{
+  display: block;
+  padding: 40px;
+}
+
+.navbar a {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and text */
+  /* ...other styles... */
+}
+
+.navbar .logo {
+  color: rgb(209, 203, 203);
+  text-decoration: none;
+  font-size: 3em;
+  padding: 10px 0 0 0;
+  margin: 0px 20px 20px 20px;
+  font-weight: 600;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.menu-toggle {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.nav-links {
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  border: 1.5px solid #DCDCDC;
+  border-radius: 12px;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+.navbar .nav-links a:hover {
+  background-color: #b30000;
+}
+
+.nav-links.show {
+  display: flex; /* Show links when the menu is open */
+}
+
+.nav-links.hide {
+  display: none;
+}
+
+/* === SCORE COUNTER === */
+
+.score-counter {
+  max-width: 700px;;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 4px 24px 0 #0002;
+  border: 1.5px solid #DCDCDC;
+  border-radius: 12px;
+}
+
+.opt-box {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+.statistics {
+  width: 90%;
+  margin: 0 auto; /* Center the statistics box */
+  padding: 10px;
+  border-radius: 0px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #ffffffd3; /* Optional, for better visibility */
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  /* font-family: 'Fira Sans', sans-serif; Matches your button font */
+  font-size: 24px;
+  line-height: 1.5;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.stat-item strong span {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.tabs {
+  width: 90%;
+  display: flex;
+  margin: 0 auto;
+  gap: 0px;
+}
 
 /* STYLES FOR TABLES */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -409,38 +431,468 @@ tr:hover {
   background-color: #333; /* Highlight row on hover */
 }
 
+/* SCORE HISTORY STYLING */
 
-.reset-button { 
-  background-color: #444;
-  color: white;
-  padding: 10px 20px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: 2px solid gray;
-  cursor: pointer;
-  transition: all 0.3s;
+.score-history {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 4px 24px 0 #0002;
+    border: 1.5px solid #DCDCDC;
+    border-radius: 12px;
+    background-color: #ffffffd3; /* Optional, for better visibility */
 }
 
-.reset-button:hover {
-  background-color: #666;
-  border-color: white;
+.add-entry-form {
+    background: #000000;
+    border: 1px solid #ddd;
+    margin: 0 auto;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+.add-entry-form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.add-entry-form label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.add-entry-form input {
+    height: 1.5em;
+    margin-left: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.add-entry-form button {
+    margin-top: 12px;
+    padding: 6px 16px;
+}
+
+.add-entry-form button:hover {
+    background: #b30000;
+}
+
+/* === CLOCK === */
+
+.clock {
+  margin-top: 12px;
+  color: black;
+  font-size: 3rem;
+}
+
+/* === Settings === */
+
+.settings-box {
+  max-width: 700px;
+  margin: 32px auto;
+  padding: 24px 20px;
+  border: 2px solid #bbb;
+  border-radius: 12px;
+  background: #ffffffd3;
+  box-shadow: 0 2px 12px #0001;
+}
+
+.settings-box h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px; /* Reduce gap between rows */
+  min-height: unset;  /* Remove any min-height */
+  padding: 0;         /* Remove padding */
+}
+
+.settings-row label {
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+  font-size: 1rem;
+  align-items: center;
+}
+
+input[type="checkbox"] {
+  margin: 0 8px 0 0; /* Only a little space to the right */
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.settings-row label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  gap: 8px;
+}
+
+.settings-box button {
+  width: 100%;
+  padding: 10px 0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.settings-box button:hover {
+  background: #900;
+}
+
+.settings-row select {
+  background: #ffffffd3;
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+input[type="checkbox"] {
+  accent-color: #b30000;
+  background-color: #ffffffd3;
+}
+
+.icon-button:disabled .add-icon {
+  color: #bbb; /* Dimmed icon when disabled */
+}
+
+/* Default (light mode) styles */
+body,
+.light-mode {
+  background-color: #fafafa;
+  color: #333;
+}
+
+body.light-mode::before {
+  background-color: white;
+}
+
+/* Elements with white background */
+.light-mode .settings-box,
+.light-mode .logo,
+.light-mode .add-entry-form,
+.light-mode .statistics {
+  background: #fff;
+}
+
+/* Elements with color: #333 */
+.light-mode .logo,
+.light-mode h1,
+.light-mode .clock {
+  color: #333;
+}
+
+/* Elements with color: #e57373 */
+.light-mode .highlight,
+.light-mode .stat-item strong span {
+  color: #b30000;
+}
+
+/* Elements with border-top: 2px solid #e57373 */
+.light-mode hr {
+  border-top: 2px solid #DCDCDC;
+}
+
+/* Elements with border: 2px solid #e57373 */
+.light-mode .statistics {
+  border: 2px solid #DCDCDC;
+  box-shadow: 0 3px 10px 1px #cfcfcf;
+}
+
+/* Navbar, Tabs, Options buttons */
+.light-mode .navbar a:not(.logo),
+.light-mode .sc-button-container button{
+  color: #b30000;
+  background-color: #f5f5f5;
+  border: 1px solid #b30000;
+}
+
+.light-mode .tabs button {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1.5px solid #DCDCDC;
+  border-bottom: none;
+}
+
+.light-mode .tabs button:hover,
+.light-mode .tabs button.active {
+  background: #b30000;
+  color: #fff;
+}
+
+.light-mode .navbar a:not(.logo):hover {
+  background-color: #ffeaea;
+}
+
+.light-mode .navbar {
+  box-shadow: 0 5px 15px 3px #cfcfcf;
+  margin-bottom: 50px;
+}
+
+/* Button hover in sc-button-container */
+.light-mode .sc-button-container button:hover,
+.light-mode .settings-box button:hover {
+  background-color: #ffeaea;
+}
+
+/* Settings box button */
+.light-mode .settings-box button {
+  color: #b30000;
+  background-color: #f5f5f5;
+  border: 1px solid #b30000;
+}
+
+/* Input focus */
+.light-mode input:focus {
+  border-color: #DCDCDC;
+  box-shadow: 0 0 10px #DCDCDC;
+}
+
+.light-mode .button-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px; /* Space above the button row */
+}
+
+.light-mode .add-entry-form button {
+  font-size: 1.5em;
+  color: #b30000;
+  background-color: #f5f5f5;
+  border: 1px solid #b30000;
+}
+
+.light-mode .button-row button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  color: #b30000;
+  background-color: #f5f5f5;
+  border: 1px solid #b30000;
+}
+
+.light-mode .button-row button:hover,
+.light-mode .add-entry-form button:hover {
+  background-color: #ffeaea;
+}
+
+.light-mode .add-icon {
+  color: black;
+}
+
+.light-mode table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  background-color: white;
+  color: black;
+  font-family: "Fira Sans", sans-serif;
+}
+
+.light-mode th, td {
+  border: 1px solid #dcdcdc;
+  padding: 8px;
+  line-height: 1;
+  height: auto;
+  vertical-align: middle;
+  font-size: 1em;
+}
+
+.light-mode th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.light-mode tr:nth-child(even) {
+  background-color: #fafafa; /* Slightly different shade for alternating rows */
+}
+
+.light-mode tr:hover {
+  background-color: #ffeaea; /* Soft red highlight on hover */
+}
+
+/* Dark mode styles */
+body,
+.dark-mode {
+  background-color: #111;
+  color: #ffffff;
+}
+
+body.dark-mode::before {
+  background-color: #111;
+}
+
+/* Elements with dark background */
+.dark-mode .settings-box,
+.dark-mode .logo,
+.dark-mode .add-entry-form,
+.dark-mode .score-history {
+  background: rgba(0, 0, 0, 0.1); /* Semi-transparent white */
+}
+
+.dark-mode .statistics {
+  background: #c9c9c9;
+  color: #111;
+}
+
+/* Elements with white text */
+.dark-mode .logo,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode p {
+  color: white;
+}
+
+/* Elements with color: #b30000 */
+.dark-mode .highlight,
+.dark-mode .stat-item strong span {
+  color: #b30000; /* Keep the same red color */
+}
+
+/* Elements with border-top */
+.dark-mode hr {
+  border-top: 1px solid white; /* Darker border for contrast */
+}
+
+/* Elements with border */
+.dark-mode .statistics {
+  background: #c9c9c9;
+}
+
+.dark-mode .statistics hr {
+  border-top: 1px solid #333; /* Darker border for contrast */
+}
+
+.dark-mode .statistics p {
+  color: black;
+}
+
+.dark-mode .statistics h2 {
+  color: black;
+}
+
+/* Navbar, Tabs, Options buttons */
+.dark-mode .navbar a:not(.logo){
+  color: black;
+  background-color: #c9c9c9; /* Dark background for buttons */
+  border: 1px solid #333;
+}
+
+.dark-mode .sc-button-container button {
+  color: white;
+  background-color: #6d0000; /* Dark background for buttons */
+  border: 1px solid #333;
+}
+
+.dark-mode .sc-button-container button:hover {
+  background-color: #c50000; /* Dark background for buttons */
+  color: white;
+}
+
+.dark-mode .tabs button {
+  border-bottom: 1px solid #c0c0c0; /* Darker border for tabs */
+  background-color: #c9c9c9; /* Dark background for tabs */
+  color: black;
+}
+
+.dark-mode .tabs button:hover {
+  background: #6d0000;
+  color: #fff;
+}
+
+.dark-mode .tabs button.active {
+  background: #6d0000;
+  color: #fff;
+  border-bottom: none;
+}
+
+.dark-mode .navbar a:not(.logo):hover {
+  background-color: #6d0000;
+  color: white;
+}
+
+.dark-mode .navbar {
+  margin-bottom: 50px;
+}
+
+/* Button hover in sc-button-container */
+.dark-mode .settings-box button:hover {
+  background-color: #b30000;
+  color: white;
+}
+
+/* Settings box button */
+.dark-mode .settings-box button {
+  color: black;
+  background-color: #c9c9c9; /* Dark background for settings button */
+}
+
+/* Input focus */
+.dark-mode input:focus {
+  border-color: #b30000; /* Red border for focus */
+  box-shadow: 0 0 10px #b30000; /* Red glow effect */
+}
+
+.dark-mode .button-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px; /* Space above the button row */
+}
+
+.dark-mode .add-entry-form button {
+  font-size: 1.5em;
+  color: black;
+  background-color: #c9c9c9;
+  border: 1px solid #333;
+}
+
+.dark-mode .button-row button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  color: black;
+  background-color: #c9c9c9;
+  border: 1px solid #333;
+}
+
+.dark-mode .button-row button:hover,
+.dark-mode .add-entry-form button:hover {
+  background-color: #b30000;
+  color: white;
+}
+
+.dark-mode .add-icon {
+  color: #000000; /* White icon for dark mode */
 }
 
 /* Responsive styles for smaller screens */
 @media only screen and (max-width: 600px) {
   body {
-    width: 90%;
-    font-size: 14px;
-    padding: 20px;  /* Add padding for mobile */
+    font-size: 1em;
   }
 
   h1.calc-title {
     margin: 0 auto;
-    font-size: 1.3em;  /* Smaller title for mobile */
-  }
-
-  hr.ct {
-    width: 60%;  /* Wider horizontal rule for smaller screens */
+    font-size: 2em;  /* Smaller title for mobile */
   }
 
   input {
@@ -463,16 +915,6 @@ tr:hover {
     align-items: center;
   }
 
-  button {
-    width: 100%;  /* Full width buttons on mobile */
-    font-size: 1em;  /* Smaller button font */
-    line-height: 1;
-  }
-
-  .language-switcher {
-    margin-top: 20px; /* Adjust for mobile layout */
-  }
-
   .opt-box button {
     padding: 10px 15px; /* Adjust spacing */
     margin: 10px auto; /* Consistent spacing between buttons */
@@ -483,12 +925,6 @@ tr:hover {
     transform: scale(0.98); /* Slight "press" effect on click */
   }
 
-  .opt-box {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; /* Include padding and border in width calculation */
-  }
 
   .custom-input {
     width: 80px; /* Set a reasonable width for the input */
@@ -498,35 +934,27 @@ tr:hover {
   .icon-button {
     flex-shrink: 0; /* Prevents the icon button from growing too large */
   }
-
-  /* .input-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  } */
   
   .navbar {
-    margin: 0 auto;
-    width: 100%;
-    padding: 10px; /* Adjust padding for smaller screens */
+    display: flex;
+    gap: 8px; /* space between buttons */
+  }
+
+  .navbar a, .navbar button {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    padding: 0.7em 0.5em;
+    font-size: 1em;
+    height: 48px; /* or your preferred height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   .navbar .logo {
     font-size: 3em; /* Reduce logo size */
-  }
-
-  .navbar .nav-links {
-    gap: 8px;
-  }
-
-  .navbar .nav-links a {
-    font-size: 16px; /* Maintain readability */
-    padding: 10px;
-    width: 100%; /* Make links full-width */
-  }
-  
-  .statistics {
-    width: 100%;
   }
 
   .stat-item {
@@ -535,15 +963,10 @@ tr:hover {
     align-items: center; /* Keeps elements aligned */
     gap: 10px; /* Adds space between elements */
   }
-
-  .tabs {
-    width: 100%;
-    margin: 0 auto;
-  }
   
   .tabs button {
     padding: 10px;
-    font-size: 0.7rem;
+    font-size: 1.0rem;
   }
 
   .tab-content {
@@ -563,5 +986,4 @@ tr:hover {
   th {
     font-size: 10px;
   }
-
 }

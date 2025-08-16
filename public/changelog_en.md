@@ -4,14 +4,39 @@
 # What's new?
 
 ---
+## [0.4.0] - 2025-08-16
+
+### Added
+
+- **Add new entry in score history:** User can now manually add the data and save it straight to Your score history! 
+
+- **New clock:** To make it easier to synchronize the start time of loading trucks.
+
+- **You can now delete entries in trucks loaded tab.** 
+
+- **Settings:** Now as a separate menu!
+
+- **Notifications:** Push-up notifications about the current score (enable in settings).
+
+- **Light/Dark mode:** Two visual themes for the app (select in settings).
+
+### Fixed
+
+- **Language:** Changelog and score history tab is fully translated now!
+
+### Changed
+
+- **Font:** Changed global font.
+
+- **Design:** Restyled the app.
+
+- **Language selection moved to settings menu.**
 
 ## [0.3.0] OUT NOW! - 2025-05-14
 
 ### Added
 
-- **New Statistics:**
-
-  - **Score History:** A very useful function that will allow the user to monitor their work efficiency. It allows the user to save the result of each working day, then calculates and displays the average monthly result of user's score.
+- **Score History:** A very useful function that will allow the user to monitor their work efficiency. It allows the user to save the result of each working day, then calculates and displays the average monthly result of user's score.
 
 ### Fixed
 

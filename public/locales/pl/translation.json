@@ -1,4 +1,11 @@
 {
+    "Navigation": {
+      "home": "Strona główna",
+      "calculator": "Kalkulator",
+      "scorehistory": "Historia wyników",
+      "settings": "Ustawienia"
+    },
+
     "LanguageSwitcher": {
       "info": "Wybierz preferowany język:",
       "en": "Angielski",
@@ -13,6 +20,8 @@
       "tab-3": "Podsumowanie",
       "palam": "Załadowano palet: ",
       "palperh": "Średnia: ",
+      "startat": "Czas rozpoczęcia: ",
+      "turnedoffat": "Wyłączono o: ",
       "apalperh": "Średnia ważona: ",
       "eltim": "Czas ładowania: ",
       "adjtim": "Dostosuj czas",
@@ -40,5 +49,30 @@
       "finishcalc-label": "Zakończ zmianę: ",
       "finishcalc-dsc": "Kończy dzień w pracy. Resetuje ustawienia do zera."
 
+    },
+
+    "ScoreHistory": {
+      "title": "Historia wyników",
+      "addentry": "Dodaj wpis",
+      "date": "Data",
+      "startTime": "Czas rozpoczęcia",
+      "endTime": "Czas zakończenia",
+      "totalTime": "Łączny czas",
+      "totalPallets": "Załadowane palety",
+      "score": "Wynik",
+      "del": "Usuń",
+      "reset": "Resetuj tabelę",
+      "hidentry": "Ukryj dodawanie wpisu",
+      "summary": "Podsumowanie",
+      "noentries": "Brak wpisów w historii."
+    },
+
+    "Settings": {
+      "title": "Ustawienia",
+      "language": "Język",
+      "darkmode": "Tryb ciemny",
+      "notification": "Włącz powiadomienia",
+      "save": "Zapisz ustawienia",
+      "language-changed": "Język został zmieniony na {{lng}}"
     }
 }

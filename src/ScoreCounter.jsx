@@ -5,10 +5,13 @@ import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import ScoreHistory from "./ScoreHistory";
+import Clock from "./Clock";
+import Debug from "./Debug";
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
 
-function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
-  // const [initialPallets, setInitialPallets] = useState(0); // REMOVE?
+function ScoreCounter({ settings, dailyCalculations, setDailyCalculations }) {
+  const lastNotificationTime = useRef(0);
   const [inputPallets, setInputPallets] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
   const [inputValue, setInputValue] = useState("");
@@ -23,21 +26,17 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     return savedActivities ? JSON.parse(savedActivities) : [];
   })  // State to store the list of saved activities
   const [isDebugging, setIsDebugging] = useState(false);
-  const [trucks, setTrucks] = useState([]);
   const { t } = useTranslation();
   const totalPalletsLoaded = activities.reduce((total, current) => {
     return total + Number(current.inputPallets);
   }, 0);
   const currentTime = Date.now();  // Current time in milliseconds
-  const [sessions, setSessions] = useState([]); // Array to hold all sessions
   const [showAdjustTime, setShowAdjustTime] = useState(false); // Toggle input visibility
 
   const [isCounting, setIsCounting] = useState(() => {
     return localStorage.getItem("isCounting") === "true";
   });
-  const [totalPallets, setTotalPallets] = useState(() => {
-    return Number(localStorage.getItem("totalPallets")) || 0;
-  });
+  const totalPallets = activities.reduce((sum, a) => sum + Number(a.inputPallets), 0);
   const [startTime, setStartTime] = useState(() => {
     return Number(localStorage.getItem("startTime")) || null;
   });
@@ -57,68 +56,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     return Number(localStorage.getItem('adjustedTime')) || 0;
   });
 
-
-  const startOver = () => {
-    const isConfirmed = window.confirm("Are You sure You want to finish Your job and clear the calculations?");
-    if(isConfirmed){
-      setCalculations([]);
-      setActivities([]);
-      // setInitialPallets(0); // REMOVE?
-      setTotalPallets(0);
-      setStartTime(null);
-      setElapsedTime(0);
-      setPalletRate(0);
-      setWeightedRate(0);
-      setInputPallets('');
-      setIsCounting(false);
-      setStartTimeInput('');
-      setMessage("");
-      setHasSavedActivity(false);
-      setAdjustedTime(0);
-  
-      // Clear localStorage
-      localStorage.removeItem('calculations');
-      localStorage.removeItem('activities');
-      localStorage.removeItem('totalPallets');
-      localStorage.removeItem('elapsedTime');
-      localStorage.removeItem('palletRate');
-      localStorage.removeItem('weightedRate');
-      localStorage.removeItem('startTime');
-      localStorage.removeItem('isCounting');
-      localStorage.removeItem('setMessage');
-      localStorage.removeItem('hasSavedActivity');
-      localStorage.removeItem('adjustedTime');
-    };
-  };
-
-  const turnOff = () => {
-    // Make function to remember previous total pallets and sum with new amount?
-    setTotalPallets(0);
-    setStartTime(null);
-    // Make function to remember previous elapsed time and sum with new amount?
-    setElapsedTime(0);
-    // setPalletRate(0); I think we shouldn't change palletRate to 0
-    setWeightedRate(0);
-    setInputPallets('');
-    setIsCounting(false);
-    setStartTimeInput('');
-    // setMessage("");
-    setAdjustedTime(0);
-
-    // Clear localStorage
-    localStorage.removeItem('totalPallets');
-    localStorage.removeItem('elapsedTime');
-    // localStorage.removeItem('palletRate');
-    localStorage.removeItem('weightedRate');
-    localStorage.removeItem('startTime');
-    localStorage.removeItem('isCounting');
-    localStorage.removeItem('adjustedTime');
-  };
   // Persist states in localStorage
-  useEffect(() => {
-    localStorage.setItem("totalPallets", totalPallets);
-  }, [totalPallets]);
-
   useEffect(() => {
     localStorage.setItem("elapsedTime", elapsedTime);
   }, [elapsedTime]);
@@ -161,7 +99,26 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     localStorage.setItem("adjustedTime", adjustedTime);
   }, [adjustedTime]);
 
-  //START OF SAVE TODAY's ACTIVITY FUNCTION
+  // Function to watch and send notifications
+  useEffect(() => {
+    const now = Date.now();
+    const cooldown = 60000; // 1 minute cooldown
+
+    if (
+      "Notification" in window &&
+      Notification.permission === "granted" &&
+      settings.notifications && // <-- Only send if enabled in settings
+      palletRate > 0 &&
+      now - lastNotificationTime.current > cooldown
+    ) {
+      new Notification("Pallet Rate Alert!", {
+        body: `Your pallet rate is now ${palletRate.toFixed(2)}!`,
+      });
+      lastNotificationTime.current = now;
+    }
+  }, [palletRate]);
+
+  // Function to save the current activity
   const saveActivity = () => {
       // Save the current activity as an object
       const newActivities = {
@@ -173,9 +130,9 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
       // Add the new calculation to the list (use the previous state to ensure it's updated correctly)
       setActivities(prevActivities => [newActivities, ...prevActivities]); // Add at the beginning
   };
-  //END
 
-  //START OF CALCULATION SAVER FUNCTION
+  // Calculate and save the current calculation
+  // This function is called when the user confirms they have stopped loading trailers for now
   const saveCalculation = () => {
     const isConfirmed = window.confirm("Have you stopped loading trailers and your score counting stopped?");
     if(isConfirmed){
@@ -192,10 +149,27 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
       // Add the new calculation to the list (use the previous state to ensure it's updated correctly)
       setCalculations(prevCalculations => [newCalculation, ...prevCalculations]); // Add at the beginning
       setHasSavedActivity(true); // Update state when saveActivity is called
-      turnOff();
+      setStartTime(null);
+      // Make function to remember previous elapsed time and sum with new amount?
+      setElapsedTime(0);
+      setWeightedRate(0);
+      setInputPallets('');
+      setIsCounting(false);
+      setStartTimeInput('');
+      setAdjustedTime(0);
+
+      // Clear localStorage
+      localStorage.removeItem('elapsedTime');
+      localStorage.removeItem('weightedRate');
+      localStorage.removeItem('startTime');
+      localStorage.removeItem('isCounting');
+      localStorage.removeItem('adjustedTime');
     }
   };
 
+  // Finish calculation and save daily score
+  // This function is called when the user confirms they have finished loading for the day
+  // It saves the daily calculation and resets the state for a new day
   const saveDailyCalculation = () => {
     const isConfirmed = window.confirm("Have you finished loading for today? (adds entry to a score daily history");
     if(isConfirmed){
@@ -209,19 +183,39 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
       };
   
       setDailyCalculations(prev => [newDailyCalculation, ...prev]);
-      startOver();
-    }
-  };
-  //END
-
-  const clearCalculations = () => {
-    const isConfirmed = window.confirm("Are you sure you want to clear all calculations?");
-    if (isConfirmed) {
-      // Reset the calculations state to an empty array
       setCalculations([]);
       setActivities([]);
+      // setInitialPallets(0); // REMOVE?
+      setStartTime(null);
+      setElapsedTime(0);
+      setPalletRate(0);
+      setWeightedRate(0);
+      setInputPallets('');
+      setIsCounting(false);
+      setStartTimeInput('');
+      setMessage("");
+      setHasSavedActivity(false);
+      setAdjustedTime(0);
+  
+      // Clear localStorage
+      localStorage.removeItem('calculations');
+      localStorage.removeItem('activities');
+      localStorage.removeItem('elapsedTime');
+      localStorage.removeItem('palletRate');
+      localStorage.removeItem('weightedRate');
+      localStorage.removeItem('startTime');
+      localStorage.removeItem('isCounting');
+      localStorage.removeItem('setMessage');
+      localStorage.removeItem('hasSavedActivity');
+      localStorage.removeItem('adjustedTime');
     }
   };
+
+  // Function to clear all calculations
+  const handleDeleteActivity = (indexToDelete) => {
+  const updatedActivities = activities.filter((_, idx) => idx !== indexToDelete);
+  setActivities(updatedActivities);
+};
 
   const formatElapsedTime = (elapsedTimeInSeconds) => {
     const hours = Math.floor(elapsedTimeInSeconds / 3600);
@@ -231,34 +225,31 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     // Pad hours, minutes, and seconds to be always 2 digits
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
-  //END OF CALCULATION SAVER FUNCTION
 
   // Start counting function (sets the start time and initializes the pallets)
   const startCounting = () => {
+    if (!startTime) { // Allow setting `startTime` only once
+        const [hours, minutes] = startTimeInput.split(":").map((num) => parseInt(num, 10));
+        const startDate = new Date();
 
-  if (!startTime) { // Allow setting `startTime` only once
-      const [hours, minutes] = startTimeInput.split(":").map((num) => parseInt(num, 10));
-      const startDate = new Date();
+        startDate.setHours(hours, minutes, 0, 0); // Set to the user-provided time
 
-      startDate.setHours(hours, minutes, 0, 0); // Set to the user-provided time
+        // Check if the chosen time is in the future (relative to now)
+        if (startDate.getTime() > currentTime) {
+          // Subtract 24 hours to handle crossing over into the previous day
+          startDate.setDate(startDate.getDate() - 1);
+        }
 
-      // Check if the chosen time is in the future (relative to now)
-      if (startDate.getTime() > currentTime) {
-        // Subtract 24 hours to handle crossing over into the previous day
-        startDate.setDate(startDate.getDate() - 1);
+        // Get the timestamp and set the state
+        const timestamp = startDate.getTime();
+        setStartTime(timestamp); // Save the timestamp
+        // setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
+        setIsCounting(true); // Start counting
+        setInputPallets(""); // Clear the input field after submitting
+      } else {
+        setIsCounting(true); // Start counting
+        setInputPallets(""); // Clear the input field after submitting
       }
-
-      // Get the timestamp and set the state
-      const timestamp = startDate.getTime();
-      setStartTime(timestamp); // Save the timestamp
-      setTotalPallets(Number(inputPallets)); // Set the initial number of pallets loaded
-      // setInitialPallets(Number(inputPallets)); // Set the initial pallets in state
-      setIsCounting(true); // Start counting
-      setInputPallets(""); // Clear the input field after submitting
-    } else {
-      setIsCounting(true); // Start counting
-      setInputPallets(""); // Clear the input field after submitting
-    }
   };
 
   // Function to add additional pallets
@@ -266,37 +257,12 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     const newPallets = Number(inputPallets);
     saveActivity();
     if (newPallets > 0) {
-      setTotalPallets((prevTotal) => prevTotal + newPallets); // Use functional update to ensure latest state
+      const totalPallets = ((prevTotal) => prevTotal + newPallets); // Use functional update to ensure latest state
       setInputPallets(''); // Clear the input field after submitting
     }
   };
 
-  // START OF DEBUGGING FUNCTIONS
-  const toggleDebugging = () => {
-    setIsDebugging(prevState => !prevState); // Toggle debugging state
-  };
-
-  const handleDebugClick = () => {
-    console.clear();
-    console.log ('============================');
-    // console.log (initialPallets + ' initialPallets'); // REMOVE?
-    console.log (totalPallets + ' totalPallets');
-    console.log (totalPalletsLoaded + ' totalPalletsLoaded');
-    console.log (elapsedTime + ' elapsedTime');
-    console.log (palletRate + ' palletRate');
-    console.log (isCounting + ' isCounting');
-    console.log (startTime + ' startTime');
-    console.log(new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' startTime converted');
-    console.log (Date.now() / 1000);
-    console.log ("IsDebugging?: ", isDebugging);
-    console.log ("Weighted score: ", weightedRate);
-    calculations.forEach((calc, index) => {
-      console.log(`  palletRate: ${calc.palletRate}`);
-      console.log(`  elapsedTime: ${calc.elapsedTime}`);
-    });
-    console.log ('============================');
-  }
-
+  // Function to check the current session and display relevant information
   const handleSessionCheck = () => {
     console.clear();
     if (calculations.length === 0) {
@@ -309,9 +275,6 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
     console.log('Total pallets loaded: ', totalPalletsLoaded);
     console.log('Total pallets: ', totalPallets);
   };
-
-
-  // END OF DEBUGGING FUNCTIONS
   
   //START OF ADJUSTING TIME FUNCTIONS
   // Function to toggle the input field visibility
@@ -322,7 +285,6 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
   const handleAdjustTime = (event) => {
     setAdjustedTime(Number(event.target.value)); // Convert input to a number
   };
-  //END OF..
 
   // Update elapsed time and pallet rate every second
   useEffect(() => {
@@ -345,16 +307,10 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
               (acc, calc) => acc + calc.elapsedTime,
               0
             );
-              // console.log('rate: ', rate);
             // Calculate the weighted rate
             const newWeightedRate =
               (totalWeightedRate + rate * currentElapsedTime) /
               (totalElapsedTime + currentElapsedTime);
-            // console.log(totalWeightedRate, '+', rate, '*', currentElapsedTime, '/', totalElapsedTime, '+', currentElapsedTime);
-            // console.log(rate);
-            // console.log(currentElapsedTime);
-            // console.log(totalElapsedTime);
-            // console.log(currentElapsedTime);
             setWeightedRate(newWeightedRate); // Update the weighted rate
           } else {
             setPalletRate(rate); // Update the rate of pallets per hour
@@ -380,6 +336,8 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
         {activeTab === 1 && (
             <div>
               <div className='statistics'>
+                <Clock />
+                <hr/>
                 {weightedRate <= 0 && (
                   <div className='stat-item'>
                     <span>{t('ScoreCounter.palperh')}</span>
@@ -461,7 +419,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                     }, 0);
 
                     // Calculate projected time to reach 47 pallets/hour
-                    const hoursToReach47 = totalPalletsLoaded / 48;
+                    const hoursToReach47 = totalPalletsLoaded / 47;
                     const additionalTimeMs = hoursToReach47 * 60 * 60 * 1000;
                     const targetTime = new Date(startTime + additionalTimeMs - totalTimeWorked - (adjustedTime * 60 * 1000));
 
@@ -471,7 +429,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                           <span>{t('ScoreCounter.47at')}</span>
                           <strong>
                             <span>
-                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </span>
                           </strong>
                         </div>
@@ -487,7 +445,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                           <span>{t('ScoreCounter.47at')}</span>
                           <strong>
                             <span>
-                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              {targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </span>
                           </strong>
                         </div>
@@ -536,23 +494,14 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                   />
                   </span>
 
-                  {/* <AddIcon 
-                      onClick={addPallets} 
-                      color="black"
-                      size="small"
-                      style={{ cursor: 'pointer', fontSize: '36px' }}
-                      disabled={Number(inputPallets) <= 0}
-                    /> */}
-
                   <IconButton 
                     onClick={addPallets} 
-                    color="black" 
                     size="small" 
                     style={{ cursor: 'pointer', fontSize: '36px' }}
                     className="icon-button"
                     disabled={Number(inputPallets) <= 0}
                   >
-                    <AddIcon />
+                    <AddIcon className="add-icon" />
                   </IconButton>
                 </div>
                 <hr/>
@@ -570,6 +519,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                             disabled={isCounting}
                             lang="pl-PL"
                             placeholder="HH:MM"
+                            step="1"
                         />
                       </span>
                     </div>
@@ -577,7 +527,11 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                       <button onClick={startCounting} disabled={startTimeInput === ''}>
                         {hasSavedActivity
                           ? t('ScoreCounter.buttons.continuect')
-                          : t('ScoreCounter.buttons.startct')}
+                          : <>
+                            <PlayCircleFilledIcon />
+                            {t('ScoreCounter.buttons.startct')}
+                            </>
+                        }
                       </button>
                       {hasSavedActivity && (
                         <div>
@@ -587,20 +541,6 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                         </div>
                       )}
                     </div>
-                      {/* <button className="debug" onClick={toggleDebugging}>
-                        {isDebugging ? "Disable Debugging" : "Enable Debugging"}
-                      </button>
-                    {isDebugging && (
-                      <div>
-                        <button className="debug" onClick={startOver}>DEBUG-RESET</button>
-                        <button className="debug" onClick={handleDebugClick}>
-                          Console.log DEBUG
-                        </button>
-                        <button className="debug" onClick={handleSessionCheck}>Session Check</button>
-                        <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
-                        <button className="debug" onClick={() => setPalletRate(0)}>Clear Rate</button>
-                      </div>
-                    )} */}
                   </div>
                 ) : (
                   // After starting, show additional options
@@ -611,19 +551,6 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                         {t('ScoreCounter.buttons.startovr')}
                       </button>
                     </div>
-                    {/* DEBUG BUTTON
-                    <button className="debug" onClick={toggleDebugging}>
-                      {isDebugging ? "Disable Debugging" : "Enable Debugging"}
-                    </button>
-                    {isDebugging && (
-                      <div>
-                        <button className="debug" onClick={handleDebugClick}>
-                          Console.log DEBUG
-                        </button>
-                        <button className="debug" onClick={handleSessionCheck}>Session Check</button>
-                        <button className="debug" onClick={clearCalculations}>Clear Calculations</button>
-                      </div>
-                    )} */}
                   </div>
                 )}
               </div>
@@ -634,14 +561,37 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
             <ul className='statistics'>
               {activities.length > 0 ? (
                 activities.map((a, index) => (
-                  <li key={index} className='stat-item' style={{ display: 'block' }}>
-                    <strong><p>{t('ScoreCounter.truck')} #{a.truckNumber} - {new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></strong>
+                  <li key={index} className='stat-item' style={{ display: 'block', position: 'relative' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteActivity(index)}
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#b30000',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        cursor: 'pointer',
+                      }}
+                      aria-label="Delete entry"
+                      title="Delete entry"
+                    >
+                      ×
+                    </button>
+                    <strong>
+                      <p>
+                        {t('ScoreCounter.truck')} #{a.truckNumber} - {new Date(a.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </strong>
                     <p>{t('ScoreCounter.palam')} {a.inputPallets}</p>
                     <hr/>
                   </li>
                 ))
               ) : (
-                <h2 style={{color: 'black'}}>No records found.</h2>
+                <h2>No records found.</h2>
               )}
             </ul>
           </div>
@@ -654,18 +604,35 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
                   <li key={index} className='stat-item' style={{ display: 'block' }}>
                     <strong>{t('ScoreCounter.tab-3')} #{index + 1}</strong><br />
                     {t('ScoreCounter.palperh')}{calc.palletRate} pallets/hour<br />
-                    Started loading at: {new Date(calc.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}<br />
-                    Turned off at: {new Date(calc.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />
+                    {t('ScoreCounter.startat')}{new Date(calc.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}<br />
+                    {t('ScoreCounter.turnedoffat')}{new Date(calc.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />
                     {t('ScoreCounter.eltim')} {formatElapsedTime(calc.elapsedTime)}<br />
                     {t('ScoreCounter.palam')} {calc.totalPallets}<br />
                     <hr/>
                   </li>
                 ))
               ) : (
-                <h2 style={{color: 'black'}}>No records found.</h2>
+                <h2>No records found.</h2>
               )}
             </ul>
           </div>
+        )}
+        {isDebugging && (
+          <Debug
+            calculations={calculations}
+            setCalculations={setCalculations}
+            activities={activities}
+            setActivities={setActivities}
+            isDebugging={isDebugging}
+            setIsDebugging={setIsDebugging}
+            totalPallets={totalPallets}
+            totalPalletsLoaded={totalPalletsLoaded}
+            elapsedTime={elapsedTime}
+            palletRate={palletRate}
+            isCounting={isCounting}
+            startTime={startTime}
+            weightedRate={weightedRate}
+          />
         )}
       </div>
       
@@ -673,20 +640,20 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
 
       {/*HOW-TO SECTION*/}
       {!isCounting ? (
-        <div>
-          <hr className='red'/><br/>
+        <div className="how-to-use-container">
+          <br/>
           <h2>{t('ScoreCounter.howto')}</h2>
           <p>
-            <br/><br/>
+            <br/>
             <span className="highlight">{t('ScoreCounter.startat-label')} </span>{t('ScoreCounter.startat-dsc')}
-            <br/><br/>
+            <br/>
           </p>
-          <br/><hr className='red'/>
+          <br/>
         </div>
       ) : (
         // SHOW THESE OPTIONS AFTER COUNTER STARTED WORKING
-        <div>
-          <hr className='red'/><br/>
+        <div className="how-to-use-container">
+          <br/>
           <h2>{t('ScoreCounter.howto')}</h2>
           <br/>
           <p>
@@ -697,7 +664,7 @@ function ScoreCounter({ dailyCalculations, setDailyCalculations }) {
               <span className="highlight">{t('ScoreCounter.finishcalc-label')}</span>{t('ScoreCounter.finishcalc-dsc')}
               <br/><br/>
           </p>
-          <br/><hr className='red'/>
+          <br/>
         </div>
       )}
     </div>

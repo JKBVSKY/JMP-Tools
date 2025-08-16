@@ -1,14 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useRegisterSW } from 'virtual:pwa-register/react';
+import { useTranslation } from "react-i18next"; // Add this import
 import Navigation from "./Navigation";
 import HomePage from "./HomePage";
 import ScoreCounter from "./ScoreCounter";
 import ScoreHistory from "./ScoreHistory";
 import Footer from "./Footer";
 import "./index.css";
+import Settings from "./Settings";
 
 function App() {
+    const { i18n } = useTranslation(); // Add this line
     const [dailyCalculations, setDailyCalculations] = useState(() => {
         try {
           const savedData = localStorage.getItem("dailyCalculations");
@@ -31,8 +34,20 @@ function App() {
         setUpdateAvailable(true);
       },
     });
-  
+    const defaultSettings = {
+      darkMode: false,
+      notifications: false,
+      language: i18n.language || 'en',
+    };
+    const [settings, setSettings] = useState(() => {
+      const saved = localStorage.getItem("settings");
+      return saved ? JSON.parse(saved) : defaultSettings;
+    });
 
+    useEffect(() => {
+      localStorage.setItem("settings", JSON.stringify(settings));
+    }, [settings]);
+    
     useEffect(() => {
         const savedCalculations = localStorage.getItem("dailyCalculations");
         if (savedCalculations) {
@@ -61,9 +76,13 @@ function App() {
       }
     };
 
+    useEffect(() => {
+      document.body.className = settings.darkMode ? "dark-mode" : "light-mode";
+    }, [settings.darkMode]);
+    
     return (
         <Router>
-          <div>
+          <div className={settings.darkMode ? "dark-mode" : "light-mode"}>
             <Navigation />
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -71,6 +90,7 @@ function App() {
                 path="/calculator"
                 element={
                   <ScoreCounter
+                    settings={settings}
                     dailyCalculations={dailyCalculations}
                     setDailyCalculations={setDailyCalculations}
                   />
@@ -83,6 +103,12 @@ function App() {
                     dailyCalculations={dailyCalculations}
                     setDailyCalculations={setDailyCalculations}
                   />
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <Settings settings={settings} setSettings={setSettings} />
                 }
               />
             </Routes>

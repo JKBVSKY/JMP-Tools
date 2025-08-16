@@ -1,4 +1,11 @@
 {
+    "Navigation": {
+      "home": "Home",
+      "calculator": "Calculator App",
+      "scorehistory": "Score History",
+      "settings": "Settings"
+    },
+    
     "LanguageSwitcher": {
       "info": "Select your preferred language:",
       "en": "English",
@@ -13,6 +20,8 @@
       "tab-3": "Summary",
       "palam": "Pallets Loaded: ",
       "palperh": "Your Score: ",
+      "startat": "Start Time: ",
+      "turnedoffat": "Turned off at: ",
       "apalperh": "Weighted Score: ",
       "eltim": "Elapsed Time: ",
       "adjtim": "Adjust Time",
@@ -39,5 +48,30 @@
       "turnoff-dsc": "Turns off the calculations and saves the actual progress. Restarting after a shutdown takes into account the previously saved result (weighted average).",
       "finishcalc-label": "End shift: ",
       "finishcalc-dsc": "Ends the day at work. Resets settings to zero."
+    },
+
+    "ScoreHistory": {
+      "title": "Score History",
+      "addentry": "Add Entry",
+      "date": "Date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "totalTime": "Total Time",
+      "totalPallets": "Pallets Loaded",
+      "score": "Score",
+      "del": "Delete",
+      "reset": "Reset",
+      "hidentry": "Hide Entry",
+      "summary": "Summary",
+      "noentries": "No entries found."
+    },
+
+    "Settings": {
+      "title": "Settings",
+      "language": "Language",
+      "darkmode": "Dark Mode",
+      "notification": "Enable notifications",
+      "save": "Save settings",
+      "language-changed": "Language has been changed to {{lng}}"
     }
 }
