@@ -4,7 +4,7 @@
 # Co nowego?
 
 ---
-## [0.4.0] - 2025-08-16
+## [0.4.0] JUŻ DOSTĘPNE! - 2025-08-16
 
 ### Dodano
 
@@ -32,7 +32,7 @@
 
 - **Wybór języka przeniesiono do menu ustawień.**
 
-## [0.3.0] JUŻ DOSTĘPNE! - 2025-05-14
+## [0.3.0] - 2025-05-14
 
 ### Dodano
 

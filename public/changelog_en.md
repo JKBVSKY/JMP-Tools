@@ -4,7 +4,7 @@
 # What's new?
 
 ---
-## [0.4.0] - 2025-08-16
+## [0.4.0] OUT NOW! - 2025-08-16
 
 ### Added
 
@@ -32,7 +32,7 @@
 
 - **Language selection moved to settings menu.**
 
-## [0.3.0] OUT NOW! - 2025-05-14
+## [0.3.0] - 2025-05-14
 
 ### Added
 
