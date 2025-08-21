@@ -1,24 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { useTranslation } from "react-i18next"; // Add this import
+import { useTranslation } from "react-i18next";
 import Navigation from "./Navigation";
 import HomePage from "./HomePage";
-import ScoreCounter from "./ScoreCounter";
+import ScoreCounter from "./ScoreCounter/ScoreCounter";
 import ScoreHistory from "./ScoreHistory";
 import Footer from "./Footer";
 import "./index.css";
 import Settings from "./Settings";
 
 function App() {
-    const { i18n } = useTranslation(); // Add this line
+    const { i18n } = useTranslation();
     const [dailyCalculations, setDailyCalculations] = useState(() => {
         try {
           const savedData = localStorage.getItem("dailyCalculations");
           return savedData && savedData !== "undefined" ? JSON.parse(savedData) : [];
         } catch (error) {
           console.error("Error parsing dailyCalculations from localStorage:", error);
-          return []; // Return empty array if parsing fails
+          return [];
         }
       });
     const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -55,7 +55,7 @@ function App() {
             setDailyCalculations(JSON.parse(savedCalculations));
         } catch (error) {
             console.error("Error parsing dailyCalculations from localStorage", error);
-            setDailyCalculations([]); // Reset to empty array on error
+            setDailyCalculations([]); 
         }
         }
     }, []);
@@ -83,7 +83,7 @@ function App() {
     return (
         <Router>
           <div className={settings.darkMode ? "dark-mode" : "light-mode"}>
-            <Navigation />
+            <Navigation settings={settings} setSettings={setSettings} />
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route

@@ -4,7 +4,23 @@
 # Co nowego?
 
 ---
-## [0.4.0] JUŻ DOSTĘPNE! - 2025-08-16
+## [0.4.1] JUŻ DOSTĘPNE! - 2025-08-22
+
+### Dodano
+- Nowoczesny boczny pasek nawigacyjny z animacją przesuwania i menu hamburgerowym.
+- Responsywny design: nawigacja działa świetnie zarówno na komputerach stacjonarnych, jak i na urządzeniach mobilnych.
+- Podświetlanie aktywnych linków w menu nawigacyjnym.
+- Animowany przycisk przełączania motywów z ikonami słońca/księżyca, umieszczony u dołu paska bocznego.
+- Obsługa gestów przesuwania w celu zamknięcia nawigacji na urządzeniach mobilnych.
+
+### Ulepszono
+- Nawigacja i przełączanie motywów są teraz w pełni zsynchronizowane w całej aplikacji.
+- Zaktualizowano kolory paska bocznego i przełącznika motywów, aby uzyskać bardziej nowoczesny wygląd.
+
+## Naprawiono
+- Poprawiona użyteczność i spójność układu na urządzeniach mobilnych.
+
+## [0.4.0] - 2025-08-16
 
 ### Dodano
 

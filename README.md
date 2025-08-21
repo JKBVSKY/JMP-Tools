@@ -1,6 +1,6 @@
 # JMP-Tools
 
-## Version 0.4.0 is up!
+## Version 0.4.1 is up!
 
 A tool designed to allow having better control of the workers' score during their day at the work. For JMP warehouse workers.
 

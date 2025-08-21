@@ -4,7 +4,23 @@
 # What's new?
 
 ---
-## [0.4.0] OUT NOW! - 2025-08-16
+## [0.4.1] OUT NOW! - 2025-08-22
+
+### Added
+- Modern side navigation bar with sliding animation and hamburger menu.
+- Responsive design: navigation works great on both desktop and mobile.
+- Active link highlighting in the navigation menu.
+- Animated theme switcher button with sun/moon icons, positioned at the bottom of the sidebar.
+- Swipe gesture support for closing the navigation on mobile devices.
+
+### Improved
+- Navigation and theme switching are now fully synchronized across the app.
+- Updated sidebar and theme switcher colors for a more modern look.
+
+### Fixed
+- Improved mobile usability and layout consistency.
+
+## [0.4.0] - 2025-08-16
 
 ### Added
 

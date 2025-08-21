@@ -4,9 +4,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
-import ScoreHistory from "./ScoreHistory";
-import Clock from "./Clock";
-import Debug from "./Debug";
+import ScoreHistory from "../ScoreHistory";
+import Clock from "../Clock";
+import Debug from "../Debug";
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
 

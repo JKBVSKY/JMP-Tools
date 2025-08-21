@@ -41,7 +41,7 @@
       },
       "howto": "Jak używać:",
       "startat-label": "Czas rozpoczęcia: ",
-      "startat-dsc": "Ustawia czas, od którego rozpocznie się odliczanie wyniku. Po ustawieniu czasu, kliknij 'Zacznij zmianę' aby zacząć kalkulację wyniku",
+      "startat-dsc": "Ustawia czas, od którego rozpocznie się odliczanie wyniku. Po ustawieniu czasu, kliknij 'Zacznij zmianę' aby zacząć kalkulację wyniku.",
       "addpall-label": "Dodaj palety: ",
       "addpall-dsc": "Dodaje następne załadowane palety w celu aktualizacji obliczeń wyniku. Zatwierdź klikając ikonę plusa.",
       "turnoff-label": "Wyłącz: ",
