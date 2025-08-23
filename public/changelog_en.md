@@ -4,6 +4,13 @@
 # What's new?
 
 ---
+## [0.4.2] OUT NOW! - 2025-08-23
+
+### Changed
+- Organized CSS code into separate files for better maintainability.
+- Improved app responsiveness on mobile and desktop devices.
+- Replaced the pallet input field with a modern slider for easier and more intuitive pallet adding.
+
 ## [0.4.1] OUT NOW! - 2025-08-22
 
 ### Added

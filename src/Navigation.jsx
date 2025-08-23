@@ -10,6 +10,7 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import './Navigation.css';
 
 
 const Navigation = ({ settings, setSettings }) => {

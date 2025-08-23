@@ -1,0 +1,77 @@
+/* === Settings === */
+
+.settings-box {
+  width: 100%;
+  margin: 32px auto;
+  padding: 24px 20px;
+  border: 2px solid #bbb;
+  border-radius: 12px;
+  background: #ffffffd3;
+  box-shadow: 0 2px 12px #0001;
+}
+
+.settings-box h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px; /* Reduce gap between rows */
+  min-height: unset;  /* Remove any min-height */
+  padding: 0;         /* Remove padding */
+}
+
+.settings-row label {
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+  font-size: 1rem;
+  align-items: center;
+}
+
+input[type="checkbox"] {
+  margin: 0 8px 0 0; /* Only a little space to the right */
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.settings-row label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  gap: 8px;
+}
+
+.settings-box button {
+  width: 100%;
+  padding: 10px 0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.settings-box button:hover {
+  background: #900;
+}
+
+.settings-row select {
+  background: #ffffffd3;
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+input[type="checkbox"] {
+  accent-color: #b30000;
+  background-color: #ffffffd3;
+}

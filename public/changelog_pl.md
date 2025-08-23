@@ -4,6 +4,13 @@
 # Co nowego?
 
 ---
+## [0.4.2] JUŻ DOSTĘPNE! - 2025-08-23
+
+### Zmieniono
+- Zorganizowano kod CSS w osobnych plikach dla lepszej czytelności i łatwiejszej konserwacji.
+- Poprawiono responsywność aplikacji na urządzeniach mobilnych i komputerach.
+- Zastąpiono pole do wprowadzania liczby palet nowoczesnym suwakiem, aby dodawanie palet było łatwiejsze i bardziej intuicyjne.
+
 ## [0.4.1] JUŻ DOSTĘPNE! - 2025-08-22
 
 ### Dodano

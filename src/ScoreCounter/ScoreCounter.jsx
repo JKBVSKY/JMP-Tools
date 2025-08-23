@@ -8,6 +8,8 @@ import ScoreHistory from "../ScoreHistory";
 import Clock from "../Clock";
 import Debug from "../Debug";
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import './ScoreCounter.css';
+import Slider from '@mui/material/Slider';
 
 
 function ScoreCounter({ settings, dailyCalculations, setDailyCalculations }) {
@@ -403,7 +405,6 @@ function ScoreCounter({ settings, dailyCalculations, setDailyCalculations }) {
                     </div>
                   </div>
                 )}
-                <hr/>
                 {/* Display 47 score at */}
                 {(palletRate > 47 || weightedRate > 47) && (() => {
                   if (calculations.length > 0) {
@@ -454,55 +455,73 @@ function ScoreCounter({ settings, dailyCalculations, setDailyCalculations }) {
                   }
                   return null;
                 })()}
+                <hr/>
                 {/* Display add pallet element */}
                 <div className='stat-item'>
                   <span>{t('ScoreCounter.addpal')}</span>
                   <span>
-                  <input
-                    className="custom-input"
-                    type="number"
-                    value={inputPallets}
-                    onChange={(e) => {
-                      setInputPallets(e.target.value); // Let user type anything
-                    }}
-                    onBlur={() => {
-                      const num = parseFloat(inputPallets);
-                      const allowedDecimals = [0, 0.25, 0.5, 0.75];
-
-                      if (!isNaN(num)) {
-                        const whole = Math.floor(num);
-                        const decimal = +(num - whole).toFixed(2);
-
-                        if (allowedDecimals.includes(decimal)) {
-                          setInputPallets(num.toString());
-                        } else {
-                          // Optionally round to nearest valid value
-                          const closest = allowedDecimals.reduce((prev, curr) =>
-                            Math.abs(curr - decimal) < Math.abs(prev - decimal) ? curr : prev
-                          );
-                          const corrected = whole + closest;
-                          setInputPallets(corrected.toString());
-                        }
-                      } else {
-                        setInputPallets(''); // Reset if invalid
-                      }
-                    }}
-                    placeholder={t('ScoreCounter.addpal-pholder')}
-                    min="0"
-                    step="0.25"
-                    disabled={!isCounting}
-                  />
+                    <IconButton 
+                      onClick={addPallets} 
+                      size="small" 
+                      style={{ cursor: 'pointer', fontSize: '36px' }}
+                      className="icon-button"
+                      disabled={Number(inputPallets) <= 0 || !isCounting }
+                    >
+                      <AddIcon className="add-icon" />
+                    </IconButton>
                   </span>
-
-                  <IconButton 
-                    onClick={addPallets} 
-                    size="small" 
-                    style={{ cursor: 'pointer', fontSize: '36px' }}
-                    className="icon-button"
-                    disabled={Number(inputPallets) <= 0}
-                  >
-                    <AddIcon className="add-icon" />
-                  </IconButton>
+                </div>
+                <div style={{ width: '80%', margin: '0 auto' }}>
+                  <span style={{ minWidth: 140, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Slider
+                      className="custom-slider"
+                      value={inputPallets === '' ? 0 : Number(inputPallets)}
+                      onChange={(e, val) => setInputPallets(val)}
+                      min={10}
+                      max={36}
+                      step={0.25}
+                      marks={[
+                        { value: 16, label: '16' },
+                        { value: 18, label: '18' },
+                        { value: 22, label: '22' },
+                        { value: 24, label: '24' },
+                        { value: 33, label: '33' }
+                      ]}
+                      valueLabelDisplay="auto" // <-- shows tooltip with value
+                      disabled={!isCounting}
+                        sx={{
+                          color: '#b30000',           // Track and thumb color
+                          height: 6,                  // Track thickness
+                          '& .MuiSlider-thumb': {
+                            borderRadius: '8px',      // Thumb shape
+                            width: 24,
+                            height: 24,
+                            backgroundColor: '#fff',
+                            border: '2px solid #b30000',
+                            boxShadow: '0 2px 8px #0002',
+                          },
+                          '& .MuiSlider-rail': {
+                            opacity: 0.3,
+                            backgroundColor: '#888',
+                          },
+                          '& .MuiSlider-mark': {
+                            backgroundColor: '#b30000',
+                            height: 8,
+                            width: 2,
+                          },
+                          '& .MuiSlider-markLabel': {
+                            color: '#b30000',
+                            fontWeight: 'bold',
+                          },
+                          '& .MuiSlider-valueLabel': {
+                            backgroundColor: '#b30000',
+                            color: '#fff',
+                            borderRadius: '6px',
+                            fontWeight: 'bold',
+                          },
+                        }}
+                    />
+                  </span>
                 </div>
                 <hr/>
                 {!isCounting ? (
